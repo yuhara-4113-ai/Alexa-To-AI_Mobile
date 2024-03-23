@@ -1,5 +1,6 @@
 // Flutterとその他のパッケージをインポート
 import 'package:flutter/material.dart';
+import '../widgets/drawer.dart';
 import 'home_screen.dart';
 import 'setting_screen.dart';
 
@@ -26,52 +27,38 @@ class ChatAIScreenState extends State<ChatAIScreen> {
 
   @override
   Widget build(BuildContext context) {
+    const homeScreen = HomeScreen();
+    const settingScreen = SettingScreen();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.name), // アプリバーのタイトル
       ),
       // ハンバーガーメニュー
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text(
-                'メニュー', // ドロワーヘッダーのテキスト
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            // ハンバーガーメニューの中身
-            ListTile(
-              title: const Text('ホーム画面'),
-              onTap: () {
-                // ホーム画面への遷移
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                );
-              },
-            ),
-            // ハンバーガーメニューの中身
-            ListTile(
-              title: const Text('設定画面'),
-              onTap: () {
-                // 設定画面への遷移
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SettingScreen()),
-                );
-              },
-            ),
-          ],
-        ),
+      drawer: CustomDrawer(
+        // todo 今はtilesを各画面でコピペで定義している状態。各画面で自画面は非表示にできたら、シンプルにできる
+        tiles: [
+          ListTile(
+            title: Text(homeScreen.name),
+            onTap: () {
+              // ホーム画面への遷移
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => homeScreen),
+              );
+            },
+          ),
+          ListTile(
+            title: Text(settingScreen.name),
+            onTap: () {
+              // 設定画面への遷移
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => settingScreen),
+              );
+            },
+          ),
+        ],
       ),
       // 画面の主要な部分
       body: Column(

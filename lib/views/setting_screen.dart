@@ -1,5 +1,6 @@
 // 必要なパッケージとファイルをインポート
 import 'package:flutter/material.dart'; // Flutterのマテリアルデザインパッケージ
+import '../widgets/drawer.dart';
 import 'home_screen.dart'; // home_screen.dartファイル
 import 'chat_ai_screen.dart'; // chat_ai_screen.dartファイル
 
@@ -23,50 +24,38 @@ class SettingScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    const homeScreen = HomeScreen();
+    const chatAIScreen = ChatAIScreen();
+
     // Scaffoldを使用して基本的なレイアウトを作成
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.name), // アプリバーのタイトル
       ),
-      drawer: Drawer(
-        // ドロワーメニュー
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text(
-                'メニュー',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              title: const Text('ホーム画面'),
-              onTap: () {
-                // ホーム画面への遷移
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('AIチャット画面'),
-              onTap: () {
-                // AIチャット画面への遷移
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ChatAIScreen()),
-                );
-              },
-            ),
-          ],
-        ),
+      drawer: CustomDrawer(
+        // todo 今はtilesを各画面でコピペで定義している状態。各画面で自画面は非表示にできたら、シンプルにできる
+        tiles: [
+          ListTile(
+            title: Text(homeScreen.name),
+            onTap: () {
+              // ホーム画面への遷移
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => homeScreen),
+              );
+            },
+          ),
+          ListTile(
+            title: Text(chatAIScreen.name),
+            onTap: () {
+              // AIチャット画面への遷移
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => chatAIScreen),
+              );
+            },
+          ),
+        ],
       ),
       // 画面の主要な部分
       body: Padding(
