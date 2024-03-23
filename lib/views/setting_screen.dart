@@ -7,8 +7,11 @@ import 'chat_ai_screen.dart'; // chat_ai_screen.dartファイル
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key}); // コンストラクタ
 
+  // 画面名取得
+  String get name => '設定画面';
+
   @override
-  SettingScreenState createState() => SettingScreenState(); // 新しいStateインスタンスを作成
+  SettingScreenState createState() => SettingScreenState();
 }
 
 // 設定画面の状態を管理する State
@@ -23,7 +26,7 @@ class SettingScreenState extends State<SettingScreen> {
     // Scaffoldを使用して基本的なレイアウトを作成
     return Scaffold(
       appBar: AppBar(
-        title: const Text('設定画面'), // アプリバーのタイトル
+        title: Text(widget.name), // アプリバーのタイトル
       ),
       drawer: Drawer(
         // ドロワーメニュー

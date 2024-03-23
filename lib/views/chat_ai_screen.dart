@@ -11,6 +11,9 @@ import 'setting_screen.dart';
 class ChatAIScreen extends StatefulWidget {
   const ChatAIScreen({super.key});
 
+  // 画面名取得
+  get name => 'AIチャット画面';
+
   @override
   ChatAIScreenState createState() => ChatAIScreenState();
 }
@@ -25,7 +28,7 @@ class ChatAIScreenState extends State<ChatAIScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AIチャット画面'), // アプリバーのタイトル
+        title: Text(widget.name), // アプリバーのタイトル
       ),
       // ハンバーガーメニュー
       drawer: Drawer(

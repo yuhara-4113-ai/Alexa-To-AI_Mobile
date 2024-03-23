@@ -1,6 +1,6 @@
 // Flutterとその他のパッケージをインポート
 import 'package:flutter/material.dart';
-import 'home_screen.dart'; // ホーム画面のインポート
+import 'views/home_screen.dart'; // ホーム画面のインポート
 
 // アプリケーションのエントリーポイント
 void main() {
