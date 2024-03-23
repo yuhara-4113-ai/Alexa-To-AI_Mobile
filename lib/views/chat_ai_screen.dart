@@ -1,6 +1,6 @@
 // Flutterとその他のパッケージをインポート
 import 'package:flutter/material.dart';
-import '../models/setting_screen_mdel.dart';
+import '../models/setting_screen_model.dart';
 import '../widgets/drawer.dart';
 import 'home_screen.dart';
 import 'setting_screen.dart';

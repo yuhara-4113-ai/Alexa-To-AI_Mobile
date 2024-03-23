@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart'; // Flutterのマテリアルデザインパッケージ
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../models/setting_screen_mdel.dart';
+import '../models/setting_screen_model.dart';
 import '../providers/setting_screen_model_provider.dart';
 import '../widgets/drawer.dart';
 
