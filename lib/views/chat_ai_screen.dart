@@ -4,10 +4,6 @@ import '../widgets/drawer.dart';
 import 'home_screen.dart';
 import 'setting_screen.dart';
 
-// httpパッケージをインポート
-// import 'package:http/http.dart' as http;
-// import 'dart:convert';
-
 // ChatAIScreenという名前のStatefulWidgetを作成
 class ChatAIScreen extends StatefulWidget {
   const ChatAIScreen({super.key});
@@ -117,31 +113,5 @@ class ChatAIScreenState extends State<ChatAIScreen> {
 /// `_sendMessage`メソッドは、ユーザの入力文字列をAIに送信します
 void _sendMessageToAi(String message) async {
   debugPrint('送信しました: 名前=$message');
-
-  // todo ここにAIへのリクエスト処理を追加
-
-  // // Define the API endpoint
-  // String apiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
-
-  // // Define the headers for the API request
-  // Map<String, String> headers = {
-  //   'Content-Type': 'application/json',
-  //   'Authorization': 'Bearer YOUR_API_KEY'
-  // };
-
-  // // Define the body of the API request
-  // String body = json.encode({'prompt': message, 'max_tokens': 60});
-
-  // // Make the API request
-  // http.Response response = await http.post(
-  //   Uri.parse(apiUrl),
-  //   headers: headers,
-  //   body: body,
-  // );
-
-  // // Parse the API response
-  // Map<String, dynamic> apiResponse = json.decode(response.body);
-
-  // // Print the API response
-  // debugPrint('API Response: ${apiResponse['choices'][0]['text']}');
+  // todo ここでai_service.dartのsendMessageToAiを呼び出す
 }
