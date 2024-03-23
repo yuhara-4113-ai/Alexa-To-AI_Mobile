@@ -1,6 +1,9 @@
 // Flutterとその他のパッケージをインポート
 import 'package:flutter/material.dart';
-import '../widgets/home_screen_button.dart'; // ホーム画面ボタンのインポート
+
+import '../models/setting_screen_mdel.dart';
+import '../widgets/home_screen_button.dart';
+
 // 遷移する別画面のインポート
 import 'chat_ai_screen.dart';
 import 'setting_screen.dart';
@@ -16,7 +19,8 @@ class HomeScreen extends StatelessWidget {
   // buildメソッドをオーバーライドします
   @override
   Widget build(BuildContext context) {
-    const settingScreen = SettingScreen();
+    final settingScreen =
+        SettingScreen(settingScreenModel: SettingScreenModel());
     const chatAIScreen = ChatAIScreen();
 
     // Scaffoldウィジェットでアプリケーションの基本的なビジュアルレイアウトを構造する

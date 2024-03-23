@@ -1,5 +1,6 @@
 // Flutterとその他のパッケージをインポート
 import 'package:flutter/material.dart';
+import '../models/setting_screen_mdel.dart';
 import '../widgets/drawer.dart';
 import 'home_screen.dart';
 import 'setting_screen.dart';
@@ -24,7 +25,8 @@ class ChatAIScreenState extends State<ChatAIScreen> {
   @override
   Widget build(BuildContext context) {
     const homeScreen = HomeScreen();
-    const settingScreen = SettingScreen();
+    final settingScreen =
+        SettingScreen(settingScreenModel: SettingScreenModel());
 
     return Scaffold(
       appBar: AppBar(
