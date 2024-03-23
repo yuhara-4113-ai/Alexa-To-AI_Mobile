@@ -65,11 +65,14 @@ class SettingScreenState extends State<SettingScreen> {
           ],
         ),
       ),
+      // 画面の主要な部分
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
+          // フォームの項目(定義順に縦に並べる)
           children: [
+            // 呼び名の入力フォーム
             TextField(
               decoration: const InputDecoration(labelText: '呼び名'),
               onChanged: (value) {
@@ -78,8 +81,10 @@ class SettingScreenState extends State<SettingScreen> {
                 });
               },
             ),
+            // 性格の入力フォーム
             DropdownButtonFormField(
-              value: _personality, // 初期値として_personalityを設定します
+              value: _personality, // 初期値
+              // ドロップダウン項目の定義
               items: ['A', 'B', 'C']
                   .map((label) => DropdownMenuItem(
                         value: label, // 各項目の値を設定します
@@ -95,8 +100,10 @@ class SettingScreenState extends State<SettingScreen> {
               decoration:
                   const InputDecoration(labelText: '性格'), // フォームのラベルを設定します
             ),
+            // 口調の入力フォーム
             DropdownButtonFormField(
-              value: _tone, // 初期値として_toneを設定します
+              value: _tone, // 初期値
+              // ドロップダウン項目の定義
               items: ['D', 'E', 'F']
                   .map((label) => DropdownMenuItem(
                         value: label, // 各項目の値を設定します
@@ -112,6 +119,7 @@ class SettingScreenState extends State<SettingScreen> {
               decoration:
                   const InputDecoration(labelText: '口調'), // フォームのラベルを設定します
             ),
+            // 保存ボタン
             const SizedBox(height: 20), // フォームとボタンの間にスペースを作成します
             ElevatedButton(
               onPressed: () {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'chat_ai_screen.dart'; // AIチャット画面のインポート
 import 'setting_screen.dart'; // 設定画面のインポート
 
-// StatelessWidgetを継承したHomeScreenクラスを定義します
+// ホーム画面
 class HomeScreen extends StatelessWidget {
   // コンストラクタを定義します
   const HomeScreen({super.key});
@@ -11,7 +11,7 @@ class HomeScreen extends StatelessWidget {
   // buildメソッドをオーバーライドします
   @override
   Widget build(BuildContext context) {
-    // Scaffoldウィジェットを返します。これは、アプリケーションの基本的なビジュアルレイアウト構造を提供します。
+    // Scaffoldウィジェットでアプリケーションの基本的なビジュアルレイアウトを構造する
     return Scaffold(
       appBar: AppBar(
         title: const Text('ホーム画面'), // アプリバーのタイトルを設定します
