@@ -1,35 +1,36 @@
 // 必要なパッケージとファイルをインポート
 import 'package:flutter/material.dart'; // Flutterのマテリアルデザインパッケージ
+import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../database/database.dart';
 import '../models/setting_screen_model.dart';
 import '../providers/setting_screen_model_provider.dart';
 import '../widgets/drawer.dart';
 
-import 'home_screen.dart'; // home_screen.dartファイル
-import 'chat_ai_screen.dart'; // chat_ai_screen.dartファイル
+import 'home_screen.dart';
+import 'chat_ai_screen.dart';
 
 // 設定画面の状態を管理する StatefulWidget
 class SettingScreen extends HookConsumerWidget {
+  // コンストラクタ SettingScreenModelを受け取る
   final SettingScreenModel settingScreenModel;
   const SettingScreen({Key? key, required this.settingScreenModel})
       : super(key: key);
 
-  // 画面名取得
-  String get name => '設定画面';
+  // 画面名
+  static String name = '設定画面';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // 状態保持している設定画面のmodelを取得
     final settingScreenModelProvider = ref.watch(settingScreenModelState);
+    // todo 画面の初期化時にローカルDBから設定を取得
 
     // TextEditingControllerのインスタンスを作成します
     final aiNameController = TextEditingController();
     // 初期化時にテキストフィールドの初期値を設定します
     aiNameController.text = settingScreenModelProvider.aiName;
-
-    const homeScreen = HomeScreen();
-    const chatAIScreen = ChatAIScreen();
 
     // Scaffoldを使用して基本的なレイアウトを作成
     return Scaffold(
@@ -40,22 +41,22 @@ class SettingScreen extends HookConsumerWidget {
         // todo 今はtilesを各画面でコピペで定義している状態。各画面で自画面は非表示にできたら、シンプルにできる
         tiles: [
           ListTile(
-            title: Text(homeScreen.name),
+            title: Text(HomeScreen.name),
             onTap: () {
               // ホーム画面への遷移
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => homeScreen),
+                MaterialPageRoute(builder: (context) => const HomeScreen()),
               );
             },
           ),
           ListTile(
-            title: Text(chatAIScreen.name),
+            title: Text(ChatAIScreen.name),
             onTap: () {
               // AIチャット画面への遷移
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => chatAIScreen),
+                MaterialPageRoute(builder: (context) => const ChatAIScreen()),
               );
             },
           ),
@@ -123,12 +124,14 @@ class SettingScreen extends HookConsumerWidget {
     );
   }
 
-  /// `_saveSettings`メソッドは、設定を保存します。
-  ///
-  /// このメソッドは、設定の保存処理を行い、その結果をデバッグ出力します。
-  void _saveSettings(SettingScreenModel model) {
-    // 保存の処理をここに追加する
+  /// `_saveSettings`メソッドは、設定をローカルDBに保存
+  Future<void> _saveSettings(SettingScreenModel model) async {
+    // tdoo スナックバーで保存しましたを表示
     debugPrint(
         '保存しました: 名前=${model.aiName}, 性格=${model.aiPersonality}, 口調=${model.aiTone}');
+    // ローカルDBに保存
+    Box<SettingScreenModel> settingModelBox =
+        await Hive.openBox<SettingScreenModel>(settingModelBoxName);
+    settingModelBox.put(settingModelBoxKey, model);
   }
 }

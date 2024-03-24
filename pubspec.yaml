@@ -18,12 +18,16 @@ dependencies:
   # 各画面の入力状態の保持に使用
   flutter_riverpod: ^2.5.1
   hooks_riverpod: ^2.5.1
+  # ローカルデータの保存に使用
+  hive: ^2.2.3
+  path_provider: ^2.1.2
   # 自然な日本語(Noto Sans JPフォント)を使うために必要
   google_fonts: ^6.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.8
   flutter_lints: ^2.0.0
 
 # The following section is specific to Flutter packages.

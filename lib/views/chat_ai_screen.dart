@@ -1,7 +1,9 @@
 // Flutterとその他のパッケージをインポート
 import 'package:flutter/material.dart';
+
 import '../models/setting_screen_model.dart';
 import '../widgets/drawer.dart';
+
 import 'home_screen.dart';
 import 'setting_screen.dart';
 
@@ -9,8 +11,8 @@ import 'setting_screen.dart';
 class ChatAIScreen extends StatefulWidget {
   const ChatAIScreen({super.key});
 
-  // 画面名取得
-  get name => 'AIチャット画面';
+  // 画面名
+  static String name = 'AIチャット画面';
 
   @override
   ChatAIScreenState createState() => ChatAIScreenState();
@@ -24,35 +26,33 @@ class ChatAIScreenState extends State<ChatAIScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const homeScreen = HomeScreen();
-    final settingScreen =
-        SettingScreen(settingScreenModel: SettingScreenModel());
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.name), // アプリバーのタイトル
+        title: Text(ChatAIScreen.name), // アプリバーのタイトル
       ),
       // ハンバーガーメニュー
       drawer: CustomDrawer(
         // todo 今はtilesを各画面でコピペで定義している状態。各画面で自画面は非表示にできたら、シンプルにできる
         tiles: [
           ListTile(
-            title: Text(homeScreen.name),
+            title: Text(HomeScreen.name),
             onTap: () {
               // ホーム画面への遷移
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => homeScreen),
+                MaterialPageRoute(builder: (context) => const HomeScreen()),
               );
             },
           ),
           ListTile(
-            title: Text(settingScreen.name),
+            title: Text(SettingScreen.name),
             onTap: () {
               // 設定画面への遷移
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => settingScreen),
+                MaterialPageRoute(
+                    builder: (context) => SettingScreen(
+                        settingScreenModel: SettingScreenModel())),
               );
             },
           ),
