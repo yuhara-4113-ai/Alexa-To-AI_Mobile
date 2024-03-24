@@ -25,8 +25,9 @@ class HomeScreen extends StatelessWidget {
 
     // Scaffoldウィジェットでアプリケーションの基本的なビジュアルレイアウトを構造する
     return Scaffold(
+      // アプリバーのタイトルを設定します
       appBar: AppBar(
-        title: const Text('ホーム画面'), // アプリバーのタイトルを設定します
+        title: Text(name),
       ),
       body: Center(
         child: Column(
