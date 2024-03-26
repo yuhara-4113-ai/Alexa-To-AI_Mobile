@@ -14,5 +14,5 @@ Future<void> initHive() async {
   Hive.init(appDocumentDirectory.path);
   Hive.registerAdapter(SettingScreenModelAdapter());
   // 初期化時にopenして後続処理で自由に使えるようにする
-  // settingModelBox = await Hive.openBox<SettingScreenModel>(settingModelBoxName);
+  settingModelBox = await Hive.openBox<SettingScreenModel>(settingModelBoxName);
 }

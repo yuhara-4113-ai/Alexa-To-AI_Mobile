@@ -4,7 +4,7 @@ part 'setting_screen_model.g.dart';
 /// 設定画面のmodel
 /// build_runnerでAdapter(Hiveに保存するためのバイナリデータ)を生成
 @HiveType(typeId: 0)
-class SettingScreenModel {
+class SettingScreenModel extends HiveObject {
   // 名前
   @HiveField(0)
   String aiName = '';

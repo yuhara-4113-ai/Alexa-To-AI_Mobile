@@ -1,21 +1,18 @@
 // Flutterとその他のパッケージをインポート
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
 
 import 'database/database.dart';
 import 'views/home_screen.dart';
 
 // アプリケーションのエントリーポイント
-Future<void> main() async {
+void main() async {
   // アプリケーションが起動する際にローカルデータベースを初期化
   WidgetsFlutterBinding.ensureInitialized();
   // ローカルデータベースの初期化
   await initHive();
   // runApp関数でアプリケーションを起動します
   runApp(const App());
-  // アプリケーションが終了する際にローカルデータベースをクローズ
-  Hive.close();
 }
 
 class App extends StatelessWidget {
@@ -27,6 +24,7 @@ class App extends StatelessWidget {
       home: ProviderScope(
         child: MaterialApp(
           theme: ThemeData(
+            // こことpubspec.yamlのfonts.familyの値を合わせないと指定したフォントが適用されない
             fontFamily: 'NotoSansJP',
           ),
           home: const HomeScreen(),

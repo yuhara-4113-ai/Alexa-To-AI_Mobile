@@ -1,6 +1,5 @@
 // 必要なパッケージとファイルをインポート
 import 'package:flutter/material.dart'; // Flutterのマテリアルデザインパッケージ
-import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../database/database.dart';
@@ -13,7 +12,7 @@ import 'chat_ai_screen.dart';
 
 // 設定画面の状態を管理する StatefulWidget
 class SettingScreen extends HookConsumerWidget {
-  // コンストラクタ SettingScreenModelを受け取る
+  // コンストラクタ 状態を保持しているModelを受け取る
   final SettingScreenModel settingScreenModel;
   const SettingScreen({Key? key, required this.settingScreenModel})
       : super(key: key);
@@ -25,7 +24,8 @@ class SettingScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // 状態保持している設定画面のmodelを取得
     final settingScreenModelProvider = ref.watch(settingScreenModelState);
-    // todo 画面の初期化時にローカルDBから設定を取得
+    // 画面に表示する設定画面のmodelを取得
+    _setViewnModel(settingScreenModelProvider);
 
     // TextEditingControllerのインスタンスを作成します
     final aiNameController = TextEditingController();
@@ -73,6 +73,7 @@ class SettingScreen extends HookConsumerWidget {
             TextField(
               controller: aiNameController, // 初期値
               decoration: const InputDecoration(labelText: '呼び名'),
+              // todo 変更する度に状態保持に反映しており、無駄がある。フォーカスアウト時だけ検知できれば最低限の反映で済むが、実装が難しそうなので一旦このまま
               onChanged: (value) {
                 settingScreenModelProvider.aiName = value;
               },
@@ -130,8 +131,33 @@ class SettingScreen extends HookConsumerWidget {
     debugPrint(
         '保存しました: 名前=${model.aiName}, 性格=${model.aiPersonality}, 口調=${model.aiTone}');
     // ローカルDBに保存
-    Box<SettingScreenModel> settingModelBox =
-        await Hive.openBox<SettingScreenModel>(settingModelBoxName);
     settingModelBox.put(settingModelBoxKey, model);
+    // todo 以下のようにsave()でboxkeyを意識しないで保存できるようにしたい
+    // model.save();
+  }
+
+  /// `_setViewModel`メソッドは、ローカルDBに保存されている設定がある場合は、状態保持中のmodelに設定を反映
+  void _setViewnModel(SettingScreenModel settingScreenModelProvider) {
+    final settingModel = settingModelBox.get(settingModelBoxKey);
+
+    // 【現状の問題点】
+    // 「状態保持中のmodel」と「ローカルDB」が存在する場合、初期表示時に「ローカルDB」が優先される
+    // 入力中で別画面に遷移し、戻ってきた場合に入力中の内容が消えてしまい、ユーザビリティが悪い。
+    // しかも、以下のようなケースで、「変更したのに反映されていないように見えるバグ」が発生する
+    // 1. アプリの初回インストールでデータを入力
+    // 2. 保存ボタンを押さずに別画面に遷移して設定画面に戻る
+    // 3. データが残っており、保存されてるっぽいので、保存ボタンを押さずにチャット画面でAIにリクエストを送る
+    // 4. ローカルDBには保存されていないため、性格や口調を初期値で送信してしまう
+
+    // 【改善策】
+    // 初期表示と変更中で「状態保持中のmodel」と「ローカルDB」をチェックする
+    // 内容が異なる場合は「設定ボタン」の名前や色を変え、ユーザーに保存を促す
+    //  パフォーマンスは多少悪くなるが、ユーザビリティを考えると必要な処理
+
+    if (settingModel != null) {
+      settingScreenModelProvider.aiName = settingModel.aiName;
+      settingScreenModelProvider.aiPersonality = settingModel.aiPersonality;
+      settingScreenModelProvider.aiTone = settingModel.aiTone;
+    }
   }
 }
