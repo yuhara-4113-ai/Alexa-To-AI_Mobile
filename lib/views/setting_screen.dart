@@ -38,7 +38,7 @@ class SettingScreen extends HookConsumerWidget {
         title: Text(name), // アプリバーのタイトル
       ),
       drawer: CustomDrawer(
-        // todo 今はtilesを各画面でコピペで定義している状態。各画面で自画面は非表示にできたら、シンプルにできる
+        // TODO 今はtilesを各画面でコピペで定義している状態。各画面で自画面は非表示にできたら、シンプルにできる
         tiles: [
           ListTile(
             title: Text(HomeScreen.name),
@@ -73,7 +73,7 @@ class SettingScreen extends HookConsumerWidget {
             TextField(
               controller: aiNameController, // 初期値
               decoration: const InputDecoration(labelText: '呼び名'),
-              // todo 変更する度に状態保持に反映しており、無駄がある。フォーカスアウト時だけ検知できれば最低限の反映で済むが、実装が難しそうなので一旦このまま
+              // TODO 変更する度に状態保持に反映しており、無駄がある。フォーカスアウト時だけ検知できれば最低限の反映で済むが、実装が難しそうなので一旦このまま
               onChanged: (value) {
                 settingScreenModelProvider.aiName = value;
               },
@@ -125,18 +125,18 @@ class SettingScreen extends HookConsumerWidget {
     );
   }
 
-  /// `_saveSettings`メソッドは、設定をローカルDBに保存
+  /// 設定をローカルDBに保存
   Future<void> _saveSettings(SettingScreenModel model) async {
-    // tdoo スナックバーで保存しましたを表示
+    // TODO スナックバーで保存しましたを表示
     debugPrint(
         '保存しました: 名前=${model.aiName}, 性格=${model.aiPersonality}, 口調=${model.aiTone}');
     // ローカルDBに保存
     settingModelBox.put(settingModelBoxKey, model);
-    // todo 以下のようにsave()でboxkeyを意識しないで保存できるようにしたい
+    // TODO 以下のようにsave()でboxkeyを意識しないで保存できるようにしたい
     // model.save();
   }
 
-  /// `_setViewModel`メソッドは、ローカルDBに保存されている設定がある場合は、状態保持中のmodelに設定を反映
+  /// ローカルDBに保存されている設定がある場合は、状態保持中のmodelに設定を反映
   void _setViewnModel(SettingScreenModel settingScreenModelProvider) {
     final settingModel = settingModelBox.get(settingModelBoxKey);
 

@@ -55,7 +55,7 @@ class ChatAIScreenState extends State<ChatAIScreen> {
       ),
       // ハンバーガーメニュー
       drawer: CustomDrawer(
-        // todo 今はtilesを各画面でコピペで定義している状態。各画面で自画面は非表示にできたら、シンプルにできる
+        // TODO 今はtilesを各画面でコピペで定義している状態。各画面で自画面は非表示にできたら、シンプルにできる
         tiles: [
           ListTile(
             title: Text(HomeScreen.name),

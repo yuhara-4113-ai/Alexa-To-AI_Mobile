@@ -23,6 +23,8 @@ dependencies:
   path_provider: ^2.1.2
   # 自然な日本語(Noto Sans JPフォント)を使うために必要
   google_fonts: ^6.2.1
+  # objectの比較に使用
+  equatable: ^2.0.5
 dev_dependencies:
   flutter_test:
     sdk: flutter
