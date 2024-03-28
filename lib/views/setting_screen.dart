@@ -31,7 +31,7 @@ class SettingScreen extends HookConsumerWidget {
         useState(settingScreenModelProvider.compareWithLocalDB());
 
     // 画面に表示する設定画面のmodelを取得
-    // _setViewnModel(settingScreenModelProvider);
+    _setViewnModel(settingScreenModelProvider);
 
     // TextEditingControllerのインスタンスを作成します
     final aiNameController = useTextEditingController();
@@ -178,5 +178,23 @@ class SettingScreen extends HookConsumerWidget {
 
     // boxとの差分状態を更新
     isCompareWithLocalDB.value = model.compareWithLocalDB();
+  }
+
+  /// ローカルDBに保存されている設定がある場合は、状態保持中のmodelに設定を反映
+  void _setViewnModel(SettingScreenModel settingScreenModelProvider) {
+    final settingModel = settingModelBox.get(settingModelBoxKey);
+
+    // TODO 状態保持中のmodelが空の判定をどうするか。とりあえずは名前が空で判定している
+    // ローカルDBが保存済みかつ、「状態保持中のmodel」が空の場合は、ローカルDBの設定を状態保持中のmodelに反映
+    if ((settingModel != null) && (settingScreenModelProvider.aiName.isEmpty)) {
+      debugPrint('ローカルDBの設定を状態保持中のmodelに反映');
+      debugPrint('box: ${settingModel.toString()}');
+      debugPrint('this: ${settingScreenModelProvider.toString()}');
+
+      settingScreenModelProvider
+        ..aiName = settingModel.aiName
+        ..aiPersonality = settingModel.aiPersonality
+        ..aiTone = settingModel.aiTone;
+    }
   }
 }
