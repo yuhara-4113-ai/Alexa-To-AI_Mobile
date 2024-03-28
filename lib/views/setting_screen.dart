@@ -1,5 +1,6 @@
 // 必要なパッケージとファイルをインポート
 import 'package:flutter/material.dart'; // Flutterのマテリアルデザインパッケージ
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../database/database.dart';
@@ -24,13 +25,41 @@ class SettingScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // 状態保持している設定画面のmodelを取得
     final settingScreenModelProvider = ref.watch(settingScreenModelState);
+
+    // 設定が保存されているかどうか(送信ボタンなどの活性/非活性を切り替える際に使用)
+    ValueNotifier<bool> isCompareWithLocalDB =
+        useState(settingScreenModelProvider.compareWithLocalDB());
+
     // 画面に表示する設定画面のmodelを取得
-    _setViewnModel(settingScreenModelProvider);
+    // _setViewnModel(settingScreenModelProvider);
 
     // TextEditingControllerのインスタンスを作成します
-    final aiNameController = TextEditingController();
+    final aiNameController = useTextEditingController();
     // 初期化時にテキストフィールドの初期値を設定します
     aiNameController.text = settingScreenModelProvider.aiName;
+    // テキストフィールドの内容が変更されたときに呼び出されるリスナーを追加
+    useEffect(() {
+      aiNameController.addListener(() {
+        debugPrint('aiNameControllerで変更を検知: ${aiNameController.text}');
+        debugPrint(
+            'asettingScreenModelProvider.aiName: ${settingScreenModelProvider.aiName}');
+
+        debugPrint('text保存前');
+        isCompareWithLocalDB.value =
+            settingScreenModelProvider.compareWithLocalDB();
+
+        // TODO 変更する度に状態保持に反映しており、無駄がある。フォーカスアウト時だけ検知できれば最低限の反映で済むが、実装が難しそうなので一旦このまま
+        settingScreenModelProvider.aiName = aiNameController.text;
+
+        debugPrint('text保存後');
+        // boxとの差分状態を更新
+        isCompareWithLocalDB.value =
+            settingScreenModelProvider.compareWithLocalDB();
+      });
+
+      // コンポーネントがアンマウントされるときにリスナーを削除します
+      return () => aiNameController.removeListener(() {});
+    }, []);
 
     // Scaffoldを使用して基本的なレイアウトを作成
     return Scaffold(
@@ -73,10 +102,6 @@ class SettingScreen extends HookConsumerWidget {
             TextField(
               controller: aiNameController, // 初期値
               decoration: const InputDecoration(labelText: '呼び名'),
-              // TODO 変更する度に状態保持に反映しており、無駄がある。フォーカスアウト時だけ検知できれば最低限の反映で済むが、実装が難しそうなので一旦このまま
-              onChanged: (value) {
-                settingScreenModelProvider.aiName = value;
-              },
             ),
             // 性格の入力フォーム
             DropdownButtonFormField(
@@ -113,11 +138,17 @@ class SettingScreen extends HookConsumerWidget {
             // 保存ボタン
             const SizedBox(height: 20), // フォームとボタンの間にスペースを作成します
             ElevatedButton(
-              onPressed: () {
-                _saveSettings(
-                    settingScreenModelProvider); // ボタンが押されたときに、_saveSettingsメソッドを呼び出します
-              },
-              child: const Text('保存'), // ボタンのラベルを設定します
+              onPressed: isCompareWithLocalDB.value
+                  // 活性
+                  ? () {
+                      _saveSettings(
+                          settingScreenModelProvider, isCompareWithLocalDB);
+                    }
+                  // 非活性
+                  : null,
+              child: Text(
+                isCompareWithLocalDB.value ? '変更内容を保存' : '設定に変更はありません',
+              ),
             ),
           ],
         ),
@@ -126,38 +157,26 @@ class SettingScreen extends HookConsumerWidget {
   }
 
   /// 設定をローカルDBに保存
-  Future<void> _saveSettings(SettingScreenModel model) async {
+  Future<void> _saveSettings(SettingScreenModel model,
+      ValueNotifier<bool> isCompareWithLocalDB) async {
     // TODO スナックバーで保存しましたを表示
     debugPrint(
         '保存しました: 名前=${model.aiName}, 性格=${model.aiPersonality}, 口調=${model.aiTone}');
+
+    // 保存用のインスタンスを生成
+    // 状態保持中のmodelをそのままboxに保存するとインスタンスが参照渡しになってしまい、差分が発生しなくなる
+    SettingScreenModel saveData = SettingScreenModel()
+      ..aiName = model.aiName
+      ..aiPersonality = model.aiPersonality
+      ..aiTone = model.aiTone;
+
     // ローカルDBに保存
-    settingModelBox.put(settingModelBoxKey, model);
+    await settingModelBox.put(settingModelBoxKey, saveData);
+
     // TODO 以下のようにsave()でboxkeyを意識しないで保存できるようにしたい
-    // model.save();
-  }
+    // model.save(){}
 
-  /// ローカルDBに保存されている設定がある場合は、状態保持中のmodelに設定を反映
-  void _setViewnModel(SettingScreenModel settingScreenModelProvider) {
-    final settingModel = settingModelBox.get(settingModelBoxKey);
-
-    // 【現状の問題点】
-    // 「状態保持中のmodel」と「ローカルDB」が存在する場合、初期表示時に「ローカルDB」が優先される
-    // 入力中で別画面に遷移し、戻ってきた場合に入力中の内容が消えてしまい、ユーザビリティが悪い。
-    // しかも、以下のようなケースで、「変更したのに反映されていないように見えるバグ」が発生する
-    // 1. アプリの初回インストールでデータを入力
-    // 2. 保存ボタンを押さずに別画面に遷移して設定画面に戻る
-    // 3. データが残っており、保存されてるっぽいので、保存ボタンを押さずにチャット画面でAIにリクエストを送る
-    // 4. ローカルDBには保存されていないため、性格や口調を初期値で送信してしまう
-
-    // 【改善策】
-    // 初期表示と変更中で「状態保持中のmodel」と「ローカルDB」をチェックする
-    // 内容が異なる場合は「設定ボタン」の名前や色を変え、ユーザーに保存を促す
-    //  パフォーマンスは多少悪くなるが、ユーザビリティを考えると必要な処理
-
-    if (settingModel != null) {
-      settingScreenModelProvider.aiName = settingModel.aiName;
-      settingScreenModelProvider.aiPersonality = settingModel.aiPersonality;
-      settingScreenModelProvider.aiTone = settingModel.aiTone;
-    }
+    // boxとの差分状態を更新
+    isCompareWithLocalDB.value = model.compareWithLocalDB();
   }
 }

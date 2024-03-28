@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 import '../database/database.dart';
@@ -32,14 +33,22 @@ class SettingScreenModel extends HiveObject with EquatableMixin {
     'F',
   ];
 
+  SettingScreenModel();
+
   // Equatableを使うことで、==演算子を使って比較できる
   @override
   List<Object> get props => [aiName, aiPersonality, aiTone];
 
-  /// 設定の保存が必要かどうかを判定
-  /// 「状態保持中のmodel」と「ローカルDB」を比較し、差分がある場合は保存が必要
-  bool isSaveNeededForSettings(SettingScreenModel settingScreenModelProvider) {
+  /// 「ローカルDB」と中身を比較
+  bool compareWithLocalDB() {
     final settingModel = settingModelBox.get(settingModelBoxKey);
-    return settingModel == settingScreenModelProvider;
+    final isCompareWithLocalDB = !(this == settingModel);
+
+    debugPrint('box: ${settingModel.toString()}');
+    debugPrint('this: ${toString()}');
+
+    debugPrint('isCompareWithLocalDB: $isCompareWithLocalDB');
+
+    return !(this == settingModel);
   }
 }
