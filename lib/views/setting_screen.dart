@@ -26,12 +26,12 @@ class SettingScreen extends HookConsumerWidget {
     // 状態保持している設定画面のmodelを取得
     final settingScreenModelProvider = ref.watch(settingScreenModelState);
 
+    // 画面に表示する設定画面のmodelを取得
+    _setViewnModel(settingScreenModelProvider);
+
     // 設定が保存されているかどうか(送信ボタンなどの活性/非活性を切り替える際に使用)
     ValueNotifier<bool> isCompareWithLocalDB =
         useState(settingScreenModelProvider.compareWithLocalDB());
-
-    // 画面に表示する設定画面のmodelを取得
-    _setViewnModel(settingScreenModelProvider);
 
     // 呼び名の入力フォームの状態を保持
     TextEditingController aiNameController = createAiNameController(
