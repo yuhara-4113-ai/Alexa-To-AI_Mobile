@@ -83,7 +83,7 @@ class SettingScreen extends HookConsumerWidget {
             // 呼び名の入力フォーム
             TextField(
               controller: aiNameController, // 初期値
-              decoration: const InputDecoration(labelText: '呼び名'),
+              decoration: const InputDecoration(labelText: 'キャラクター名'),
             ),
             // 性格の入力フォーム
             DropdownButtonFormField(

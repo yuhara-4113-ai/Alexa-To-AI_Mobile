@@ -9,7 +9,7 @@ part 'setting_screen_model.g.dart';
 /// build_runnerでAdapter(Hiveに保存するためのバイナリデータ)を生成
 @HiveType(typeId: 0)
 class SettingScreenModel extends HiveObject with EquatableMixin {
-  // 名前
+  // キャラクター名(口調)
   @HiveField(0)
   String aiName = '';
 
@@ -18,9 +18,11 @@ class SettingScreenModel extends HiveObject with EquatableMixin {
   String aiPersonality = aiPersonalityList[0];
   // 性格のリスト
   static List<String> aiPersonalityList = [
-    'A',
-    'B',
-    'C',
+    '',
+    '優しい',
+    '厳しい',
+    'ツンデレ',
+    'クール',
   ];
 
   // 口調
