@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 
 import '../database/database.dart';
 import '../models/setting_screen_model.dart';
+import '../services/ai_service.dart';
 import '../widgets/alert_dialog.dart';
 import '../widgets/drawer.dart';
 
 import 'home_screen.dart';
 import 'setting_screen.dart';
-
-// 設定画面で保存した内容をローカルDBから取得
-final settingModel = settingModelBox.get(settingModelBoxKey);
 
 // ChatAIScreenという名前のStatefulWidgetを作成
 class ChatAIScreen extends StatefulWidget {
@@ -25,6 +23,9 @@ class ChatAIScreen extends StatefulWidget {
 
 // ChatAIScreenの状態を管理するクラス
 class ChatAIScreenState extends State<ChatAIScreen> {
+  // 設定画面で保存した内容をローカルDBから取得
+  final settingModel = settingModelBox.get(settingModelBoxKey);
+
   List<String> messages = []; // メッセージを格納するリスト
   TextEditingController messageController =
       TextEditingController(); // メッセージ入力のコントローラー
@@ -175,16 +176,36 @@ class ChatAIScreenState extends State<ChatAIScreen> {
     );
   }
 
-  /// `_sendMessage`メソッドは、ユーザの入力文字列をAIに送信
+  /// ユーザの入力文字列をAIに送信
   void _sendMessageToAi(String message) async {
-    debugPrint('送信しました: 名前=$message');
+    // ユーザの入力文字列に設定内容を付与し、AIに送信するプロンプトを作成
+    String prompt = createPrompt(message);
+    // AIにリクエストを送信
+    sendMessageToAi(prompt).then((responseText) {
+      // AIからの返答をメッセージとして表示
+      setState(() {
+        messages.add(responseText);
+      });
+    });
+  }
 
-    if (settingModel == null) {
-      return;
-    } else {
-      debugPrint('settingModel=$settingModel.toString()');
+  String createPrompt(String message) {
+    // TODO AIに送信するプロンプトの作成は別ファイル(Utilとか？)の関数で定義する？
+    // キャラクター名のプロンプト設定
+    String aiNamePrompt = '';
+    String aiName = settingModel!.aiName;
+    if (aiName.isNotEmpty) {
+      aiNamePrompt = '口調は$aiNameで、';
     }
-
-    // ここでai_service.dartのsendMessageToAiを呼び出す
+    // 性格のプロンプト設定
+    String aiPersonalityPrompt = '';
+    String aiPersonality = settingModel!.aiPersonality;
+    if (aiPersonality.isNotEmpty) {
+      aiPersonalityPrompt = '性格は$aiPersonalityで、';
+    }
+    // ユーザの入力文字列に設定内容を付与し、AIに送信するプロンプトを作成
+    String prompt = aiNamePrompt + aiPersonalityPrompt + message;
+    debugPrint('prompt=$prompt');
+    return prompt;
   }
 }

@@ -26,6 +26,8 @@ dependencies:
   google_fonts: ^6.2.1
   # objectの比較に使用
   equatable: ^2.0.5
+  # OpenAIのAPIリクエストに使用
+  chat_gpt_sdk: ^3.0.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
