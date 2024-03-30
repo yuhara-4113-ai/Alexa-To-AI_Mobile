@@ -1,5 +1,6 @@
 // Flutterとその他のパッケージをインポート
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'database/database.dart';
@@ -7,6 +8,8 @@ import 'views/home_screen.dart';
 
 // アプリケーションのエントリーポイント
 void main() async {
+  // .envファイルの読み込み
+  await dotenv.load();
   // アプリケーションが起動する際にローカルデータベースを初期化
   WidgetsFlutterBinding.ensureInitialized();
   // ローカルデータベースの初期化
