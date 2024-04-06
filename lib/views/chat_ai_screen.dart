@@ -31,10 +31,13 @@ class ChatAIScreenState extends State<ChatAIScreen> {
       TextEditingController(); // メッセージ入力のコントローラー
   bool _isSettingSaved = true; // 設定が保存されているかどうか(送信ボタンなどの活性/非活性を切り替える際に使用)
 
+  late AIService aiService;
+
+  // 画面描画後に1度だけ呼び出されるメソッド
   @override
-  // 画面描画後に呼び出されるメソッド
   void initState() {
     super.initState();
+    aiService = AIService();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // ローカルDBに設定情報がない場合(初期インストール後に設定画面で保存してない場合など)
       // アラートを表示し、対象の画面要素を非活性(再描画)にする
@@ -181,7 +184,7 @@ class ChatAIScreenState extends State<ChatAIScreen> {
     // ユーザの入力文字列に設定内容を付与し、AIに送信するプロンプトを作成
     String prompt = createPrompt(message);
     // AIにリクエストを送信
-    sendMessageToAi(prompt).then((responseText) {
+    aiService.sendMessageToAi(prompt).then((responseText) {
       // AIからの返答をメッセージとして表示
       setState(() {
         messages.add(responseText);
