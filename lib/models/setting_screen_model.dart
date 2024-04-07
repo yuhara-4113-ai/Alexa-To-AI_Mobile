@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -52,5 +54,17 @@ class SettingScreenModel extends HiveObject with EquatableMixin {
     debugPrint('isCompareWithLocalDB: $isCompareWithLocalDB');
 
     return !(this == settingModel);
+  }
+
+  String toJson() {
+    return jsonEncode({
+      // TODO user_idはログイン機能を実装したら変更する
+      'user_id': '1',
+      // TODO クラウド側とIFがあってないので調整。
+      'tone': aiName,
+      'personality': aiPersonality,
+      // TODO クラウド側とIFがあってないので調整。typeは使用するAIの種類(ChatGPTなど)。
+      'type': aiTone,
+    });
   }
 }

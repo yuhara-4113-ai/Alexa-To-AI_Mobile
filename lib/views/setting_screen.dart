@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../database/database.dart';
 import '../models/setting_screen_model.dart';
 import '../providers/setting_screen_model_provider.dart';
+import '../services/cloud_storage_service.dart';
 import '../widgets/drawer.dart';
 
 import 'home_screen.dart';
@@ -217,6 +218,9 @@ class SettingScreen extends HookConsumerWidget {
 
     // boxとの差分状態を更新
     isCompareWithLocalDB.value = model.compareWithLocalDB();
+
+    // 設定内容をクラウド上に保存する関数を実行
+    CloudStorageService().saveAISettingData(model);
   }
 
   /// ローカルDBに保存されている設定がある場合は、状態保持中のmodelに設定を反映
