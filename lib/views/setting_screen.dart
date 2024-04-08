@@ -37,12 +37,12 @@ class SettingScreen extends HookConsumerWidget {
     // 呼び名の入力フォームの状態を保持
     TextEditingController aiNameController = createAiNameController(
         settingScreenModelProvider, isCompareWithLocalDB);
-    // 性格の選択状態を保持
-    ValueNotifier<String> selectedAiPersonality = createSelectedAiPersonality(
-        settingScreenModelProvider, isCompareWithLocalDB);
-    // 口調の選択状態を保持
-    ValueNotifier<String> selectedAiTone =
-        createSelectedAiTone(settingScreenModelProvider, isCompareWithLocalDB);
+    // // 性格の選択状態を保持
+    // ValueNotifier<String> selectedAiPersonality = createSelectedAiPersonality(
+    //     settingScreenModelProvider, isCompareWithLocalDB);
+    // // 口調の選択状態を保持
+    // ValueNotifier<String> selectedAiTone =
+    //     createSelectedAiTone(settingScreenModelProvider, isCompareWithLocalDB);
 
     // Scaffoldを使用して基本的なレイアウトを作成
     return Scaffold(
@@ -81,43 +81,43 @@ class SettingScreen extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           // フォームの項目(定義順に縦に並べる)
           children: [
-            // 呼び名の入力フォーム
+            // 口調/キャラクター名の入力フォーム
             TextField(
               controller: aiNameController, // 初期値
-              decoration: const InputDecoration(labelText: 'キャラクター名'),
+              decoration: const InputDecoration(labelText: '口調/キャラクター名'),
             ),
-            // 性格の入力フォーム
-            DropdownButtonFormField(
-              value: selectedAiPersonality.value,
-              // ドロップダウン項目の定義
-              items: SettingScreenModel.aiPersonalityList
-                  .map((label) => DropdownMenuItem(
-                        value: label, // 各項目の値を設定します
-                        child: Text(label), // 各項目のラベルを設定します
-                      ))
-                  .toList(), // ドロップダウンの項目をリストとして設定します
-              onChanged: (value) {
-                selectedAiPersonality.value = value!;
-              },
-              decoration:
-                  const InputDecoration(labelText: '性格'), // フォームのラベルを設定します
-            ),
-            // 口調の入力フォーム
-            DropdownButtonFormField(
-              value: selectedAiTone.value,
-              // ドロップダウン項目の定義
-              items: SettingScreenModel.aiToneList
-                  .map((label) => DropdownMenuItem(
-                        value: label, // 各項目の値を設定します
-                        child: Text(label), // 各項目のラベルを設定します
-                      ))
-                  .toList(), // ドロップダウンの項目をリストとして設定します
-              onChanged: (value) {
-                selectedAiTone.value = value!;
-              },
-              decoration:
-                  const InputDecoration(labelText: '口調'), // フォームのラベルを設定します
-            ),
+            // // 性格の入力フォーム
+            // DropdownButtonFormField(
+            //   value: selectedAiPersonality.value,
+            //   // ドロップダウン項目の定義
+            //   items: SettingScreenModel.aiPersonalityList
+            //       .map((label) => DropdownMenuItem(
+            //             value: label, // 各項目の値を設定します
+            //             child: Text(label), // 各項目のラベルを設定します
+            //           ))
+            //       .toList(), // ドロップダウンの項目をリストとして設定します
+            //   onChanged: (value) {
+            //     selectedAiPersonality.value = value!;
+            //   },
+            //   decoration:
+            //       const InputDecoration(labelText: '性格'), // フォームのラベルを設定します
+            // ),
+            // // 口調の入力フォーム
+            // DropdownButtonFormField(
+            //   value: selectedAiTone.value,
+            //   // ドロップダウン項目の定義
+            //   items: SettingScreenModel.aiToneList
+            //       .map((label) => DropdownMenuItem(
+            //             value: label, // 各項目の値を設定します
+            //             child: Text(label), // 各項目のラベルを設定します
+            //           ))
+            //       .toList(), // ドロップダウンの項目をリストとして設定します
+            //   onChanged: (value) {
+            //     selectedAiTone.value = value!;
+            //   },
+            //   decoration:
+            //       const InputDecoration(labelText: '口調'), // フォームのラベルを設定します
+            // ),
             // 保存ボタン
             const SizedBox(height: 20), // フォームとボタンの間にスペースを作成します
             ElevatedButton(
@@ -133,46 +133,60 @@ class SettingScreen extends HookConsumerWidget {
                 isCompareWithLocalDB.value ? '変更内容を保存' : '設定に変更はありません',
               ),
             ),
+            // チャット画面への遷移ボタン
+            const SizedBox(height: 20), // フォームとボタンの間にスペースを作成します
+            ElevatedButton(
+              onPressed: () {
+                // AIチャット画面への遷移
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ChatAIScreen()),
+                );
+              },
+              child: const Text(
+                '設定内容をAIチャット画面でお試し',
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  ValueNotifier<String> createSelectedAiTone(
-      SettingScreenModel settingScreenModelProvider,
-      ValueNotifier<bool> isCompareWithLocalDB) {
-    final selectedAiTone = useState<String>(settingScreenModelProvider.aiTone);
-    useEffect(() {
-      selectedAiTone.addListener(() {
-        settingScreenModelProvider.aiTone = selectedAiTone.value;
-        // boxとの差分状態を更新
-        isCompareWithLocalDB.value =
-            settingScreenModelProvider.compareWithLocalDB();
-      });
-      // コンポーネントがアンマウントされるときにリスナーを削除します
-      return () => selectedAiTone.removeListener(() {});
-    }, []);
-    return selectedAiTone;
-  }
+  // ValueNotifier<String> createSelectedAiTone(
+  //     SettingScreenModel settingScreenModelProvider,
+  //     ValueNotifier<bool> isCompareWithLocalDB) {
+  //   final selectedAiTone = useState<String>(settingScreenModelProvider.aiTone);
+  //   useEffect(() {
+  //     selectedAiTone.addListener(() {
+  //       settingScreenModelProvider.aiTone = selectedAiTone.value;
+  //       // boxとの差分状態を更新
+  //       isCompareWithLocalDB.value =
+  //           settingScreenModelProvider.compareWithLocalDB();
+  //     });
+  //     // コンポーネントがアンマウントされるときにリスナーを削除します
+  //     return () => selectedAiTone.removeListener(() {});
+  //   }, []);
+  //   return selectedAiTone;
+  // }
 
-  ValueNotifier<String> createSelectedAiPersonality(
-      SettingScreenModel settingScreenModelProvider,
-      ValueNotifier<bool> isCompareWithLocalDB) {
-    final selectedAiPersonality =
-        useState<String>(settingScreenModelProvider.aiPersonality);
-    useEffect(() {
-      selectedAiPersonality.addListener(() {
-        settingScreenModelProvider.aiPersonality = selectedAiPersonality.value;
-        // boxとの差分状態を更新
-        isCompareWithLocalDB.value =
-            settingScreenModelProvider.compareWithLocalDB();
-      });
-      // コンポーネントがアンマウントされるときにリスナーを削除します
-      return () => selectedAiPersonality.removeListener(() {});
-    }, []);
-    return selectedAiPersonality;
-  }
+  // ValueNotifier<String> createSelectedAiPersonality(
+  //     SettingScreenModel settingScreenModelProvider,
+  //     ValueNotifier<bool> isCompareWithLocalDB) {
+  //   final selectedAiPersonality =
+  //       useState<String>(settingScreenModelProvider.aiPersonality);
+  //   useEffect(() {
+  //     selectedAiPersonality.addListener(() {
+  //       settingScreenModelProvider.aiPersonality = selectedAiPersonality.value;
+  //       // boxとの差分状態を更新
+  //       isCompareWithLocalDB.value =
+  //           settingScreenModelProvider.compareWithLocalDB();
+  //     });
+  //     // コンポーネントがアンマウントされるときにリスナーを削除します
+  //     return () => selectedAiPersonality.removeListener(() {});
+  //   }, []);
+  //   return selectedAiPersonality;
+  // }
 
   TextEditingController createAiNameController(
       SettingScreenModel settingScreenModelProvider,
@@ -227,17 +241,16 @@ class SettingScreen extends HookConsumerWidget {
   void _setViewnModel(SettingScreenModel settingScreenModelProvider) {
     final settingModel = settingModelBox.get(settingModelBoxKey);
 
-    // TODO 状態保持中のmodelが空の判定をどうするか。とりあえずは名前が空で判定している
     // ローカルDBが保存済みかつ、「状態保持中のmodel」が空の場合は、ローカルDBの設定を状態保持中のmodelに反映
-    if ((settingModel != null) && (settingScreenModelProvider.aiName.isEmpty)) {
-      debugPrint('ローカルDBの設定を状態保持中のmodelに反映');
-      debugPrint('box: ${settingModel.toString()}');
-      debugPrint('this: ${settingScreenModelProvider.toString()}');
+    // if (settingModel != null) {
+    //   debugPrint('ローカルDBの設定を状態保持中のmodelに反映');
+    //   debugPrint('box: ${settingModel.toString()}');
+    //   debugPrint('this: ${settingScreenModelProvider.toString()}');
 
-      settingScreenModelProvider
-        ..aiName = settingModel.aiName
-        ..aiPersonality = settingModel.aiPersonality
-        ..aiTone = settingModel.aiTone;
-    }
+    //   settingScreenModelProvider
+    //     ..aiName = settingModel.aiName
+    //     ..aiPersonality = settingModel.aiPersonality
+    //     ..aiTone = settingModel.aiTone;
+    // }
   }
 }

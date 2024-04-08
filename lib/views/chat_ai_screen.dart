@@ -198,17 +198,16 @@ class ChatAIScreenState extends State<ChatAIScreen> {
     String aiNamePrompt = '';
     String aiName = settingModel!.aiName;
     if (aiName.isNotEmpty) {
-      aiNamePrompt = '口調は$aiNameで、';
+      aiNamePrompt = '口調は$aiNameで';
     }
     // 性格のプロンプト設定
-    String aiPersonalityPrompt = '';
-    String aiPersonality = settingModel!.aiPersonality;
-    if (aiPersonality.isNotEmpty) {
-      aiPersonalityPrompt = '性格は$aiPersonalityで、';
-    }
+    // String aiPersonalityPrompt = '';
+    // String aiPersonality = settingModel!.aiPersonality;
+    // if (aiPersonality.isNotEmpty) {
+    //   aiPersonalityPrompt = '性格は$aiPersonalityで、';
+    // }
     // ユーザの入力文字列に設定内容を付与し、AIに送信するプロンプトを作成
-    String prompt = aiNamePrompt + aiPersonalityPrompt + message;
-    debugPrint('prompt=$prompt');
+    String prompt = aiNamePrompt + message;
     return prompt;
   }
 }
