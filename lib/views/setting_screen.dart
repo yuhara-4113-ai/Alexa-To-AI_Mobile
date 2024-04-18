@@ -83,6 +83,10 @@ class SettingScreen extends HookConsumerWidget {
           children: [
             // 口調/キャラクター名の入力フォーム
             TextField(
+              // TODO TextFieldの入力中に画面描画が行われると、フォーカスが失われるため、キーボードの予測変換が閉じてしまう
+              // 上記の解消：keyを定義し、TextFieldの状態を保持する
+              // ⇨ダメだった
+              key: const Key('aiToneTextFieldKey'),
               controller: aiNameController, // 初期値
               decoration: const InputDecoration(labelText: '口調/キャラクター名'),
             ),
@@ -195,10 +199,12 @@ class SettingScreen extends HookConsumerWidget {
     final aiNameController = useTextEditingController();
     // 初期化時にテキストフィールドの初期値を設定します
     aiNameController.text = settingScreenModelProvider.aiName;
+
     // テキストフィールドの内容が変更されたときに呼び出されるリスナーを追加
     useEffect(() {
       aiNameController.addListener(() {
         // TODO 変更する度に状態保持に反映しており、無駄がある。フォーカスアウト時だけ検知できれば最低限の反映で済むが、実装が難しそうなので一旦このまま
+        // TODO 上記の影響もあり、「保存ボタン」のstaetが変更した直後、1文字目の入力後が確定したような挙動になり、予測バーみたいのが閉じてしまう
         settingScreenModelProvider.aiName = aiNameController.text;
         // boxとの差分状態を更新
         isCompareWithLocalDB.value =

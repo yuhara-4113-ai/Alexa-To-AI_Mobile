@@ -1,5 +1,9 @@
 // Flutterとその他のパッケージをインポート
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:math';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 
 import '../database/database.dart';
 import '../models/setting_screen_model.dart';
@@ -26,9 +30,10 @@ class ChatAIScreenState extends State<ChatAIScreen> {
   // 設定画面で保存した内容をローカルDBから取得
   final settingModel = settingModelBox.get(settingModelBoxKey);
 
-  List<String> messages = []; // メッセージを格納するリスト
-  TextEditingController messageController =
-      TextEditingController(); // メッセージ入力のコントローラー
+  List<types.Message> messages = []; // メッセージを格納するリスト
+  final _user = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3ac');
+  final _ai = const types.User(id: '82091008-a484-4a89-ae75-hjgvhkjbig44');
+
   bool _isSettingSaved = true; // 設定が保存されているかどうか(送信ボタンなどの活性/非活性を切り替える際に使用)
 
   late AIService aiService;
@@ -86,81 +91,91 @@ class ChatAIScreenState extends State<ChatAIScreen> {
         ],
       ),
       // 画面の主要な部分
-      body: Column(
-        children: <Widget>[
-          // メッセージの履歴
-          Expanded(
-            child: ListView.builder(
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                // メッセージを表示するリストタイルを作成
-                return ListTile(
-                  title: Text(messages[index]),
-                );
-              },
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            height: 70.0,
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    controller: messageController, // テキストフィールドのコントローラー
-                    decoration: const InputDecoration(
-                      hintText: 'メッセージを入力', // ヒントテキスト
-                    ),
-                    enabled: _isSettingSaved,
-                  ),
-                ),
-                // 送信ボタン
-                Material(
-                  child: Center(
-                    child: Ink(
-                      decoration: const ShapeDecoration(
-                        color: Colors.blue,
-                        shape: CircleBorder(),
-                      ),
-                      // 送信ボタン(本体)
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.send,
-                          color: Colors.white,
-                        ),
-                        onPressed: _isSettingSaved
-                            // 活性
-                            ? () {
-                                _onPressedSendButton();
-                              }
-                            // 非活性
-                            : null,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+      body: Chat(
+        user: _user,
+        messages: messages,
+        onSendPressed: _onPressedSendButton,
       ),
+      // body: Column(
+      //   children: <Widget>[
+      //     // メッセージの履歴
+      //     Expanded(
+      //       child: ListView.builder(
+      //         itemCount: messages.length,
+      //         itemBuilder: (context, index) {
+      //           // メッセージを表示するリストタイルを作成
+      //           return ListTile(
+      //             title: Text(messages[index]),
+      //           );
+      //         },
+      //       ),
+      //     ),
+      //     Container(
+      //       padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      //       height: 70.0,
+      //       child: Row(
+      //         children: <Widget>[
+      //           Expanded(
+      //             child: TextField(
+      //               controller: messageController, // テキストフィールドのコントローラー
+      //               decoration: const InputDecoration(
+      //                 hintText: 'メッセージを入力', // ヒントテキスト
+      //               ),
+      //               enabled: _isSettingSaved,
+      //             ),
+      //           ),
+      //           // 送信ボタン
+      //           Material(
+      //             child: Center(
+      //               child: Ink(
+      //                 decoration: const ShapeDecoration(
+      //                   color: Colors.blue,
+      //                   shape: CircleBorder(),
+      //                 ),
+      //                 // 送信ボタン(本体)
+      //                 child: IconButton(
+      //                   icon: const Icon(
+      //                     Icons.send,
+      //                     color: Colors.white,
+      //                   ),
+      //                   onPressed: _isSettingSaved
+      //                       // 活性
+      //                       ? () {
+      //                           _onPressedSendButton();
+      //                         }
+      //                       // 非活性
+      //                       : null,
+      //                 ),
+      //               ),
+      //             ),
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //   ],
+      // ),
     );
   }
 
   /// 送信ボタンが押された際の処理
-  void _onPressedSendButton() {
-    // メッセージが空でない場合に送信処理を行う
-    if (messageController.text.isNotEmpty) {
-      // メッセージをAIに送信
-      _sendMessageToAi(messageController.text);
-      // 画面再描画
-      setState(() {
-        // 入力されたメッセージをリストに追加(チャット履歴として表示)
-        messages.add(messageController.text);
-        // メッセージ入力欄をクリア
-        messageController.clear();
-      });
-    }
+  void _onPressedSendButton(types.PartialText message) {
+    final textMessage = types.TextMessage(
+      author: _user,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      id: randomString(),
+      text: message.text,
+    );
+
+    _addMessage(textMessage);
+
+    // メッセージをAIに送信
+    _sendMessageToAi(message.text);
+  }
+
+  void _addMessage(types.Message message) {
+    setState(() {
+      messages.insert(0, message);
+    });
   }
 
   /// 設定が未保存の場合にアラートを表示
@@ -186,9 +201,14 @@ class ChatAIScreenState extends State<ChatAIScreen> {
     // AIにリクエストを送信
     aiService.sendMessageToAi(prompt).then((responseText) {
       // AIからの返答をメッセージとして表示
-      setState(() {
-        messages.add(responseText);
-      });
+      final textMessage = types.TextMessage(
+        author: _ai,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        id: randomString(),
+        text: responseText,
+      );
+
+      _addMessage(textMessage);
     });
   }
 
@@ -209,5 +229,11 @@ class ChatAIScreenState extends State<ChatAIScreen> {
     // ユーザの入力文字列に設定内容を付与し、AIに送信するプロンプトを作成
     String prompt = aiNamePrompt + message;
     return prompt;
+  }
+
+  String randomString() {
+    final random = Random.secure();
+    final values = List<int>.generate(16, (i) => random.nextInt(255));
+    return base64UrlEncode(values);
   }
 }
