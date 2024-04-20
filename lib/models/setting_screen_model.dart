@@ -9,6 +9,8 @@ part 'setting_screen_model.g.dart';
 
 /// 設定画面のmodel
 /// build_runnerでAdapter(Hiveに保存するためのバイナリデータ)を生成
+/// 保存対象の項目は@HiveFieldで指定
+/// 保存する項目を変更した場合は「flutter packages pub run build_runner build」を実行して保存する実体のファイルを更新する
 @HiveType(typeId: 0)
 class SettingScreenModel extends HiveObject with EquatableMixin {
   // キャラクター名(口調)
@@ -38,6 +40,7 @@ class SettingScreenModel extends HiveObject with EquatableMixin {
   ];
 
   // 保存済みフラグ(保存したらtrueになる)
+  @HiveField(3)
   bool isSaved = false;
 
   SettingScreenModel();
