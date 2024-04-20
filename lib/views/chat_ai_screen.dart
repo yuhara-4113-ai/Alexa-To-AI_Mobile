@@ -34,8 +34,6 @@ class ChatAIScreenState extends State<ChatAIScreen> {
   final _user = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3ac');
   final _ai = const types.User(id: '82091008-a484-4a89-ae75-hjgvhkjbig44');
 
-  bool _isSettingSaved = true; // 設定が保存されているかどうか(送信ボタンなどの活性/非活性を切り替える際に使用)
-
   late AIService aiService;
 
   // 画面描画後に1度だけ呼び出されるメソッド
@@ -44,14 +42,11 @@ class ChatAIScreenState extends State<ChatAIScreen> {
     super.initState();
     aiService = AIService();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // ローカルDBに設定情報がない場合(初期インストール後に設定画面で保存してない場合など)
-      // アラートを表示し、対象の画面要素を非活性(再描画)にする
+      // ローカルDBに未保存のない場合(初期インストール後に設定画面で保存してない場合など)
+      // アラートを表示し、保存を促す
       final settingModel = settingModelBox.get(settingModelBoxKey);
-      if (settingModel == null) {
+      if (!settingModel!.isSaved) {
         _showAlertDialog();
-        setState(() {
-          _isSettingSaved = false;
-        });
       }
     });
   }
@@ -96,64 +91,6 @@ class ChatAIScreenState extends State<ChatAIScreen> {
         messages: messages,
         onSendPressed: _onPressedSendButton,
       ),
-      // body: Column(
-      //   children: <Widget>[
-      //     // メッセージの履歴
-      //     Expanded(
-      //       child: ListView.builder(
-      //         itemCount: messages.length,
-      //         itemBuilder: (context, index) {
-      //           // メッセージを表示するリストタイルを作成
-      //           return ListTile(
-      //             title: Text(messages[index]),
-      //           );
-      //         },
-      //       ),
-      //     ),
-      //     Container(
-      //       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      //       height: 70.0,
-      //       child: Row(
-      //         children: <Widget>[
-      //           Expanded(
-      //             child: TextField(
-      //               controller: messageController, // テキストフィールドのコントローラー
-      //               decoration: const InputDecoration(
-      //                 hintText: 'メッセージを入力', // ヒントテキスト
-      //               ),
-      //               enabled: _isSettingSaved,
-      //             ),
-      //           ),
-      //           // 送信ボタン
-      //           Material(
-      //             child: Center(
-      //               child: Ink(
-      //                 decoration: const ShapeDecoration(
-      //                   color: Colors.blue,
-      //                   shape: CircleBorder(),
-      //                 ),
-      //                 // 送信ボタン(本体)
-      //                 child: IconButton(
-      //                   icon: const Icon(
-      //                     Icons.send,
-      //                     color: Colors.white,
-      //                   ),
-      //                   onPressed: _isSettingSaved
-      //                       // 活性
-      //                       ? () {
-      //                           _onPressedSendButton();
-      //                         }
-      //                       // 非活性
-      //                       : null,
-      //                 ),
-      //               ),
-      //             ),
-      //           ),
-      //         ],
-      //       ),
-      //     ),
-      //   ],
-      // ),
     );
   }
 
@@ -185,7 +122,7 @@ class ChatAIScreenState extends State<ChatAIScreen> {
       builder: (context) {
         return CustomAlertDialog(
           titleValue: '設定が未保存です',
-          contentValue: '設定画面で保存した後にメッセージの送信が行えます',
+          contentValue: '設定画面でAIの口調などがカスタマイズできます',
           onOkPressed: () {
             Navigator.of(context).pop();
           },

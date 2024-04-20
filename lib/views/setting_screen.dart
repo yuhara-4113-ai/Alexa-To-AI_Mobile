@@ -27,8 +27,15 @@ class SettingScreen extends HookConsumerWidget {
     // 状態保持している設定画面のmodelを取得
     final settingScreenModelProvider = ref.watch(settingScreenModelState);
 
-    // 画面に表示する設定画面のmodelを取得
-    _setViewnModel(settingScreenModelProvider);
+    // 画面描画後に1度だけ呼び出されるメソッド
+    useEffect(() {
+      // 画面に表示する設定画面のmodelを取得
+      _setViewnModel(settingScreenModelProvider);
+      return () {
+        // このコードはウィジェットが破棄されるときに実行されます
+        // disposeのような動作を行います
+      };
+    }, const []);
 
     // 設定が保存されているかどうか(送信ボタンなどの活性/非活性を切り替える際に使用)
     ValueNotifier<bool> isCompareWithLocalDB =
@@ -148,7 +155,7 @@ class SettingScreen extends HookConsumerWidget {
                 );
               },
               child: const Text(
-                '設定内容をAIチャット画面でお試し',
+                'AIチャット画面でお試し',
               ),
             ),
           ],
@@ -228,7 +235,8 @@ class SettingScreen extends HookConsumerWidget {
     SettingScreenModel saveData = SettingScreenModel()
       ..aiName = model.aiName
       ..aiPersonality = model.aiPersonality
-      ..aiTone = model.aiTone;
+      ..aiTone = model.aiTone
+      ..isSaved = true;
 
     // ローカルDBに保存
     await settingModelBox.put(settingModelBoxKey, saveData);
@@ -246,17 +254,13 @@ class SettingScreen extends HookConsumerWidget {
   /// ローカルDBに保存されている設定がある場合は、状態保持中のmodelに設定を反映
   void _setViewnModel(SettingScreenModel settingScreenModelProvider) {
     final settingModel = settingModelBox.get(settingModelBoxKey);
+    debugPrint('ローカルDBの設定を状態保持中のmodelに反映');
+    debugPrint('box: ${settingModel.toString()}');
+    debugPrint('this: ${settingScreenModelProvider.toString()}');
 
-    // ローカルDBが保存済みかつ、「状態保持中のmodel」が空の場合は、ローカルDBの設定を状態保持中のmodelに反映
-    // if (settingModel != null) {
-    //   debugPrint('ローカルDBの設定を状態保持中のmodelに反映');
-    //   debugPrint('box: ${settingModel.toString()}');
-    //   debugPrint('this: ${settingScreenModelProvider.toString()}');
-
-    //   settingScreenModelProvider
-    //     ..aiName = settingModel.aiName
-    //     ..aiPersonality = settingModel.aiPersonality
-    //     ..aiTone = settingModel.aiTone;
-    // }
+    settingScreenModelProvider
+      ..aiName = settingModel!.aiName
+      ..aiPersonality = settingModel.aiPersonality
+      ..aiTone = settingModel.aiTone;
   }
 }

@@ -15,4 +15,8 @@ Future<void> initHive() async {
   Hive.registerAdapter(SettingScreenModelAdapter());
   // 初期化時にopenして後続処理で自由に使えるようにする
   settingModelBox = await Hive.openBox<SettingScreenModel>(settingModelBoxName);
+  // データがない場合は初期化して事実上nullが発生しない状態にする
+  if (settingModelBox.get(settingModelBoxKey) == null) {
+    settingModelBox.put(settingModelBoxKey, SettingScreenModel());
+  }
 }

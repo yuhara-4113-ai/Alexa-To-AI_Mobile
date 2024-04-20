@@ -37,6 +37,9 @@ class SettingScreenModel extends HiveObject with EquatableMixin {
     'F',
   ];
 
+  // 保存済みフラグ(保存したらtrueになる)
+  bool isSaved = false;
+
   SettingScreenModel();
 
   // Equatableを使うことで、==演算子を使って比較できる
