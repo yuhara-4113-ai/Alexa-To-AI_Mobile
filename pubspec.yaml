@@ -1,5 +1,5 @@
 name: alexa_to_ai
-description: "A new Flutter project."
+description: "アレクサがAIと連携する際に参照する設定を保存する"
 publish_to: "none"
 version: 1.0.0+1
 

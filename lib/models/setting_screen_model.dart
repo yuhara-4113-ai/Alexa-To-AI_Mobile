@@ -15,39 +15,17 @@ part 'setting_screen_model.g.dart';
 class SettingScreenModel extends HiveObject with EquatableMixin {
   // キャラクター名(口調)
   @HiveField(0)
-  String aiName = '';
-
-  // 性格
-  @HiveField(1)
-  String aiPersonality = aiPersonalityList[0];
-  // 性格のリスト
-  static List<String> aiPersonalityList = [
-    '',
-    '優しい',
-    '厳しい',
-    'ツンデレ',
-    'クール',
-  ];
-
-  // 口調
-  @HiveField(2)
-  String aiTone = aiToneList[0];
-  // 性格のリスト
-  static List<String> aiToneList = [
-    'D',
-    'E',
-    'F',
-  ];
+  String aiTone = '';
 
   // 保存済みフラグ(保存したらtrueになる)
-  @HiveField(3)
+  @HiveField(1)
   bool isSaved = false;
 
   SettingScreenModel();
 
   // Equatableを使うことで、==演算子を使って比較できる
   @override
-  List<Object> get props => [aiName, aiPersonality, aiTone];
+  List<Object> get props => [aiTone];
 
   /// 「ローカルDB」と中身を比較
   bool compareWithLocalDB() {
@@ -64,13 +42,9 @@ class SettingScreenModel extends HiveObject with EquatableMixin {
 
   String toJson() {
     return jsonEncode({
-      // TODO user_idはログイン機能を実装したら変更する
+      // user_idはログイン機能が必要になって実装したら適宜変更する。とりあえず固定値
       'user_id': '1',
-      // TODO クラウド側とIFがあってないので調整。
-      'tone': aiName,
-      'personality': aiPersonality,
-      // TODO クラウド側とIFがあってないので調整。typeは使用するAIの種類(ChatGPTなど)。
-      'type': aiTone,
+      'tone': aiTone,
     });
   }
 }

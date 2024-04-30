@@ -17,21 +17,15 @@ class SettingScreenModelAdapter extends TypeAdapter<SettingScreenModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return SettingScreenModel()
-      ..aiName = fields[0] as String
-      ..aiPersonality = fields[1] as String
-      ..aiTone = fields[2] as String
+      ..aiTone = fields[0] as String
       ..isSaved = fields[3] as bool;
   }
 
   @override
   void write(BinaryWriter writer, SettingScreenModel obj) {
     writer
-      ..writeByte(4)
-      ..writeByte(0)
-      ..write(obj.aiName)
-      ..writeByte(1)
-      ..write(obj.aiPersonality)
       ..writeByte(2)
+      ..writeByte(0)
       ..write(obj.aiTone)
       ..writeByte(3)
       ..write(obj.isSaved);

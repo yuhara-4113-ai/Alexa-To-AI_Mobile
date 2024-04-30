@@ -153,7 +153,7 @@ class ChatAIScreenState extends State<ChatAIScreen> {
     // TODO AIに送信するプロンプトの作成は別ファイル(Utilとか？)の関数で定義する？
     // キャラクター名のプロンプト設定
     String aiNamePrompt = '';
-    String aiName = settingModel!.aiName;
+    String aiName = settingModel!.aiTone;
     if (aiName.isNotEmpty) {
       aiNamePrompt = '口調は$aiNameで';
     }

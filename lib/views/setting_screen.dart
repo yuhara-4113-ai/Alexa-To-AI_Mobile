@@ -12,7 +12,6 @@ import '../widgets/drawer.dart';
 import 'home_screen.dart';
 import 'chat_ai_screen.dart';
 
-// 設定画面の状態を管理する StatefulWidget
 class SettingScreen extends HookConsumerWidget {
   // コンストラクタ 状態を保持しているModelを受け取る
   final SettingScreenModel settingScreenModel;
@@ -42,14 +41,8 @@ class SettingScreen extends HookConsumerWidget {
         useState(settingScreenModelProvider.compareWithLocalDB());
 
     // 呼び名の入力フォームの状態を保持
-    TextEditingController aiNameController = createAiNameController(
+    TextEditingController aiToneController = createAiToneController(
         settingScreenModelProvider, isCompareWithLocalDB);
-    // // 性格の選択状態を保持
-    // ValueNotifier<String> selectedAiPersonality = createSelectedAiPersonality(
-    //     settingScreenModelProvider, isCompareWithLocalDB);
-    // // 口調の選択状態を保持
-    // ValueNotifier<String> selectedAiTone =
-    //     createSelectedAiTone(settingScreenModelProvider, isCompareWithLocalDB);
 
     // Scaffoldを使用して基本的なレイアウトを作成
     return Scaffold(
@@ -94,41 +87,9 @@ class SettingScreen extends HookConsumerWidget {
               // 上記の解消：keyを定義し、TextFieldの状態を保持する
               // ⇨ダメだった
               key: const Key('aiToneTextFieldKey'),
-              controller: aiNameController, // 初期値
+              controller: aiToneController, // 初期値
               decoration: const InputDecoration(labelText: '口調/キャラクター名'),
             ),
-            // // 性格の入力フォーム
-            // DropdownButtonFormField(
-            //   value: selectedAiPersonality.value,
-            //   // ドロップダウン項目の定義
-            //   items: SettingScreenModel.aiPersonalityList
-            //       .map((label) => DropdownMenuItem(
-            //             value: label, // 各項目の値を設定します
-            //             child: Text(label), // 各項目のラベルを設定します
-            //           ))
-            //       .toList(), // ドロップダウンの項目をリストとして設定します
-            //   onChanged: (value) {
-            //     selectedAiPersonality.value = value!;
-            //   },
-            //   decoration:
-            //       const InputDecoration(labelText: '性格'), // フォームのラベルを設定します
-            // ),
-            // // 口調の入力フォーム
-            // DropdownButtonFormField(
-            //   value: selectedAiTone.value,
-            //   // ドロップダウン項目の定義
-            //   items: SettingScreenModel.aiToneList
-            //       .map((label) => DropdownMenuItem(
-            //             value: label, // 各項目の値を設定します
-            //             child: Text(label), // 各項目のラベルを設定します
-            //           ))
-            //       .toList(), // ドロップダウンの項目をリストとして設定します
-            //   onChanged: (value) {
-            //     selectedAiTone.value = value!;
-            //   },
-            //   decoration:
-            //       const InputDecoration(labelText: '口調'), // フォームのラベルを設定します
-            // ),
             // 保存ボタン
             const SizedBox(height: 20), // フォームとボタンの間にスペースを作成します
             ElevatedButton(
@@ -164,77 +125,39 @@ class SettingScreen extends HookConsumerWidget {
     );
   }
 
-  // ValueNotifier<String> createSelectedAiTone(
-  //     SettingScreenModel settingScreenModelProvider,
-  //     ValueNotifier<bool> isCompareWithLocalDB) {
-  //   final selectedAiTone = useState<String>(settingScreenModelProvider.aiTone);
-  //   useEffect(() {
-  //     selectedAiTone.addListener(() {
-  //       settingScreenModelProvider.aiTone = selectedAiTone.value;
-  //       // boxとの差分状態を更新
-  //       isCompareWithLocalDB.value =
-  //           settingScreenModelProvider.compareWithLocalDB();
-  //     });
-  //     // コンポーネントがアンマウントされるときにリスナーを削除します
-  //     return () => selectedAiTone.removeListener(() {});
-  //   }, []);
-  //   return selectedAiTone;
-  // }
-
-  // ValueNotifier<String> createSelectedAiPersonality(
-  //     SettingScreenModel settingScreenModelProvider,
-  //     ValueNotifier<bool> isCompareWithLocalDB) {
-  //   final selectedAiPersonality =
-  //       useState<String>(settingScreenModelProvider.aiPersonality);
-  //   useEffect(() {
-  //     selectedAiPersonality.addListener(() {
-  //       settingScreenModelProvider.aiPersonality = selectedAiPersonality.value;
-  //       // boxとの差分状態を更新
-  //       isCompareWithLocalDB.value =
-  //           settingScreenModelProvider.compareWithLocalDB();
-  //     });
-  //     // コンポーネントがアンマウントされるときにリスナーを削除します
-  //     return () => selectedAiPersonality.removeListener(() {});
-  //   }, []);
-  //   return selectedAiPersonality;
-  // }
-
-  TextEditingController createAiNameController(
+  TextEditingController createAiToneController(
       SettingScreenModel settingScreenModelProvider,
       ValueNotifier<bool> isCompareWithLocalDB) {
     // TextEditingControllerのインスタンスを作成します
-    final aiNameController = useTextEditingController();
+    final aiToneController = useTextEditingController();
     // 初期化時にテキストフィールドの初期値を設定します
-    aiNameController.text = settingScreenModelProvider.aiName;
+    aiToneController.text = settingScreenModelProvider.aiTone;
 
     // テキストフィールドの内容が変更されたときに呼び出されるリスナーを追加
     useEffect(() {
-      aiNameController.addListener(() {
+      aiToneController.addListener(() {
         // TODO 変更する度に状態保持に反映しており、無駄がある。フォーカスアウト時だけ検知できれば最低限の反映で済むが、実装が難しそうなので一旦このまま
         // TODO 上記の影響もあり、「保存ボタン」のstaetが変更した直後、1文字目の入力後が確定したような挙動になり、予測バーみたいのが閉じてしまう
-        settingScreenModelProvider.aiName = aiNameController.text;
+        settingScreenModelProvider.aiTone = aiToneController.text;
         // boxとの差分状態を更新
         isCompareWithLocalDB.value =
             settingScreenModelProvider.compareWithLocalDB();
       });
       // コンポーネントがアンマウントされるときにリスナーを削除します
-      return () => aiNameController.removeListener(() {});
+      return () => aiToneController.removeListener(() {});
     }, []);
-    return aiNameController;
+    return aiToneController;
   }
 
   /// 設定をローカルDBに保存
   Future<void> _saveSettings(SettingScreenModel model,
       ValueNotifier<bool> isCompareWithLocalDB) async {
     // TODO スナックバーで保存しましたを表示
-    debugPrint(
-        '保存しました: 名前=${model.aiName}, 性格=${model.aiPersonality}, 口調=${model.aiTone}');
+    debugPrint('保存しました: 名前=${model.aiTone}');
 
     // 保存用のインスタンスを生成
     // 状態保持中のmodelをそのままboxに保存するとインスタンスが参照渡しになってしまい、差分が発生しなくなる
     SettingScreenModel saveData = SettingScreenModel()
-      ..aiName = model.aiName
-      ..aiPersonality = model.aiPersonality
       ..aiTone = model.aiTone
       ..isSaved = true;
 
@@ -258,9 +181,6 @@ class SettingScreen extends HookConsumerWidget {
     debugPrint('box: ${settingModel.toString()}');
     debugPrint('this: ${settingScreenModelProvider.toString()}');
 
-    settingScreenModelProvider
-      ..aiName = settingModel!.aiName
-      ..aiPersonality = settingModel.aiPersonality
-      ..aiTone = settingModel.aiTone;
+    settingScreenModelProvider.aiTone = settingModel!.aiTone;
   }
 }
