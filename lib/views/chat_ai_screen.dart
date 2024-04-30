@@ -150,21 +150,14 @@ class ChatAIScreenState extends State<ChatAIScreen> {
   }
 
   String createPrompt(String message) {
-    // TODO AIに送信するプロンプトの作成は別ファイル(Utilとか？)の関数で定義する？
-    // キャラクター名のプロンプト設定
-    String aiNamePrompt = '';
+    // 口調のプロンプト設定
+    String aiTonePrompt = '';
     String aiName = settingModel!.aiTone;
     if (aiName.isNotEmpty) {
-      aiNamePrompt = '口調は$aiNameで';
+      aiTonePrompt = '口調は$aiNameで';
     }
-    // 性格のプロンプト設定
-    // String aiPersonalityPrompt = '';
-    // String aiPersonality = settingModel!.aiPersonality;
-    // if (aiPersonality.isNotEmpty) {
-    //   aiPersonalityPrompt = '性格は$aiPersonalityで、';
-    // }
     // ユーザの入力文字列に設定内容を付与し、AIに送信するプロンプトを作成
-    String prompt = aiNamePrompt + message;
+    String prompt = aiTonePrompt + message;
     return prompt;
   }
 

@@ -12,6 +12,8 @@ import '../widgets/drawer.dart';
 import 'home_screen.dart';
 import 'chat_ai_screen.dart';
 
+final cloudStorageService = CloudStorageService();
+
 class SettingScreen extends HookConsumerWidget {
   // コンストラクタ 状態を保持しているModelを受け取る
   final SettingScreenModel settingScreenModel;
@@ -171,7 +173,7 @@ class SettingScreen extends HookConsumerWidget {
     isCompareWithLocalDB.value = model.compareWithLocalDB();
 
     // 設定内容をクラウド上に保存する関数を実行
-    CloudStorageService().saveAISettingData(model);
+    cloudStorageService.saveAISettingData(model);
   }
 
   /// ローカルDBに保存されている設定がある場合は、状態保持中のmodelに設定を反映
