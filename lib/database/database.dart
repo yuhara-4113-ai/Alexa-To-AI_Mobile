@@ -1,4 +1,4 @@
-import 'package:flutter_test1/models/setting_screen_model.dart';
+import 'package:alexa_to_ai/models/setting_screen_model.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
