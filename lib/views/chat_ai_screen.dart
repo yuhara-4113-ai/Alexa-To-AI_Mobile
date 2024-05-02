@@ -14,7 +14,6 @@ import '../widgets/drawer.dart';
 import 'home_screen.dart';
 import 'setting_screen.dart';
 
-// ChatAIScreenという名前のStatefulWidgetを作成
 class ChatAIScreen extends StatefulWidget {
   const ChatAIScreen({super.key});
 
@@ -25,7 +24,6 @@ class ChatAIScreen extends StatefulWidget {
   ChatAIScreenState createState() => ChatAIScreenState();
 }
 
-// ChatAIScreenの状態を管理するクラス
 class ChatAIScreenState extends State<ChatAIScreen> {
   // 設定画面で保存した内容をローカルDBから取得
   final settingModel = settingModelBox.get(settingModelBoxKey);
@@ -152,9 +150,9 @@ class ChatAIScreenState extends State<ChatAIScreen> {
   String createPrompt(String message) {
     // 口調のプロンプト設定
     String aiTonePrompt = '';
-    String aiName = settingModel!.aiTone;
-    if (aiName.isNotEmpty) {
-      aiTonePrompt = '口調は$aiNameで';
+    String aiTone = settingModel!.aiTone;
+    if (aiTone.isNotEmpty) {
+      aiTonePrompt = '口調は$aiToneで';
     }
     // ユーザの入力文字列に設定内容を付与し、AIに送信するプロンプトを作成
     String prompt = aiTonePrompt + message;
