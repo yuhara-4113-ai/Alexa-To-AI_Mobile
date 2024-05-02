@@ -1,16 +1,24 @@
-# flutter_test1
+# Alexa-To-AI_Flutter
 
-A new Flutter project.
+## 目的
+AlexaがAI(ChatGPTなど)と接続する際、ユーザーがAIの口調などを任意に設定できるようにする
 
-## Getting Started
+## 前提
+1. Flutterで開発しているので、以下でFlutterをinstallしてください  
+[Install Flutter](https://docs.flutter.dev/get-started/install)
 
-This project is a starting point for a Flutter application.
+2. FVMをインストール
+    ```sh
+    brew tap leoafarias/fvm
+    brew install fvm
 
-A few resources to get you started if this is your first Flutter project:
+    # 以下でバージョンが表示されたらOK
+    fvm --version
+    ```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## プロジェクトのclone後
+ルートフォルダで以下を実行
+```sh
+fvm use 3.19.6
+fvm flutter pub get
+```
