@@ -155,9 +155,6 @@ class SettingScreen extends HookConsumerWidget {
   /// 設定をローカルDBに保存
   Future<void> _saveSettings(SettingScreenModel model,
       ValueNotifier<bool> isCompareWithLocalDB, BuildContext context) async {
-    // TODO スナックバーで保存しましたを表示
-    debugPrint('保存しました: 名前=${model.aiTone}');
-
     // 保存用のインスタンスを生成
     // 状態保持中のmodelをそのままboxに保存するとインスタンスが共有されてしまい、差分が発生しなくなる
     SettingScreenModel saveData = SettingScreenModel()
@@ -177,7 +174,7 @@ class SettingScreen extends HookConsumerWidget {
     // 結果を画面に表示
     cloudStorageService.saveAISettingData(model).then((success) {
       if (success) {
-        _showAlertDialog(context);
+        _showSnackBar(context);
       } else {
         _showAlertDialog(context);
       }
@@ -198,7 +195,7 @@ class SettingScreen extends HookConsumerWidget {
   }
 
   /// 保存に失敗した場合にアラートを表示
-  void _showAlertDialog(context) {
+  void _showSnackBar(context) {
     SnackBar snackBar = SnackBar(
       content: const Text('保存に成功しました'),
       backgroundColor: Colors.green, // スナックバーの背景色を緑に設定
@@ -212,7 +209,7 @@ class SettingScreen extends HookConsumerWidget {
   }
 
   /// 保存に失敗した場合にアラートを表示
-  void _showSnackBar(context) {
+  void _showAlertDialog(context) {
     showDialog(
       context: context,
       builder: (context) {
