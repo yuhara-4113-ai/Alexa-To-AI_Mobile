@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
-import '../database/database.dart';
+import 'package:alexa_to_ai/database/database.dart';
 part 'setting_screen_model.g.dart';
 
 /// 設定画面のmodel

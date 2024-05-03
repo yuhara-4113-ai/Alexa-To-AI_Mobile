@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 
-import '../models/env.dart';
+import 'package:alexa_to_ai/models/env.dart';
 
 class AIService {
   /// AIにリクエストを送信

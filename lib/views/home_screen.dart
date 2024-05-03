@@ -1,8 +1,8 @@
 // Flutterとその他のパッケージをインポート
 import 'package:flutter/material.dart';
 
-import '../models/setting_screen_model.dart';
-import '../widgets/home_screen_button.dart';
+import 'package:alexa_to_ai/models/setting_screen_model.dart';
+import 'package:alexa_to_ai/widgets/home_screen_button.dart';
 
 import 'chat_ai_screen.dart';
 import 'setting_screen.dart';

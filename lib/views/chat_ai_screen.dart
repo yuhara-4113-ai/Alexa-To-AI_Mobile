@@ -5,11 +5,11 @@ import 'dart:math';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 
-import '../database/database.dart';
-import '../models/setting_screen_model.dart';
-import '../services/ai_service.dart';
-import '../widgets/alert_dialog.dart';
-import '../widgets/drawer.dart';
+import 'package:alexa_to_ai/database/database.dart';
+import 'package:alexa_to_ai/models/setting_screen_model.dart';
+import 'package:alexa_to_ai/services/ai_service.dart';
+import 'package:alexa_to_ai/widgets/alert_dialog.dart';
+import 'package:alexa_to_ai/widgets/drawer.dart';
 
 import 'home_screen.dart';
 import 'setting_screen.dart';

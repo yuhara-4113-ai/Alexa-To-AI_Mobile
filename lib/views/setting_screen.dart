@@ -3,11 +3,12 @@ import 'package:flutter/material.dart'; // Flutterのマテリアルデザイン
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../database/database.dart';
-import '../models/setting_screen_model.dart';
-import '../providers/setting_screen_model_provider.dart';
-import '../services/cloud_storage_service.dart';
-import '../widgets/drawer.dart';
+import 'package:alexa_to_ai/database/database.dart';
+import 'package:alexa_to_ai/models/setting_screen_model.dart';
+import 'package:alexa_to_ai/providers/setting_screen_model_provider.dart';
+import 'package:alexa_to_ai/services/cloud_storage_service.dart';
+import 'package:alexa_to_ai/widgets/alert_dialog.dart';
+import 'package:alexa_to_ai/widgets/drawer.dart';
 
 import 'home_screen.dart';
 import 'chat_ai_screen.dart';
@@ -98,8 +99,8 @@ class SettingScreen extends HookConsumerWidget {
               onPressed: isCompareWithLocalDB.value
                   // 活性
                   ? () {
-                      _saveSettings(
-                          settingScreenModelProvider, isCompareWithLocalDB);
+                      _saveSettings(settingScreenModelProvider,
+                          isCompareWithLocalDB, context);
                     }
                   // 非活性
                   : null,
@@ -153,12 +154,12 @@ class SettingScreen extends HookConsumerWidget {
 
   /// 設定をローカルDBに保存
   Future<void> _saveSettings(SettingScreenModel model,
-      ValueNotifier<bool> isCompareWithLocalDB) async {
+      ValueNotifier<bool> isCompareWithLocalDB, BuildContext context) async {
     // TODO スナックバーで保存しましたを表示
     debugPrint('保存しました: 名前=${model.aiTone}');
 
     // 保存用のインスタンスを生成
-    // 状態保持中のmodelをそのままboxに保存するとインスタンスが参照渡しになってしまい、差分が発生しなくなる
+    // 状態保持中のmodelをそのままboxに保存するとインスタンスが共有されてしまい、差分が発生しなくなる
     SettingScreenModel saveData = SettingScreenModel()
       ..aiTone = model.aiTone
       ..isSaved = true;
@@ -173,7 +174,17 @@ class SettingScreen extends HookConsumerWidget {
     isCompareWithLocalDB.value = model.compareWithLocalDB();
 
     // 設定内容をクラウド上に保存する関数を実行
-    cloudStorageService.saveAISettingData(model);
+    // 結果を画面に表示
+    cloudStorageService.saveAISettingData(model).then((success) {
+      if (success) {
+        _showAlertDialog(context);
+      } else {
+        _showAlertDialog(context);
+      }
+    }).catchError((error) {
+      debugPrint(error);
+      _showAlertDialog(context);
+    });
   }
 
   /// ローカルDBに保存されている設定がある場合は、状態保持中のmodelに設定を反映
@@ -184,5 +195,35 @@ class SettingScreen extends HookConsumerWidget {
     debugPrint('this: ${settingScreenModelProvider.toString()}');
 
     settingScreenModelProvider.aiTone = settingModel!.aiTone;
+  }
+
+  /// 保存に失敗した場合にアラートを表示
+  void _showAlertDialog(context) {
+    SnackBar snackBar = SnackBar(
+      content: const Text('保存に成功しました'),
+      backgroundColor: Colors.green, // スナックバーの背景色を緑に設定
+      behavior: SnackBarBehavior.floating, // スナックバーを浮かせる
+      margin: const EdgeInsets.only(bottom: 10.0), // 下からのマージンを10に設定
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10)), // 角丸の半径を設定
+      duration: const Duration(seconds: 2), // 表示時間を2秒に設定
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  /// 保存に失敗した場合にアラートを表示
+  void _showSnackBar(context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return CustomAlertDialog(
+          titleValue: '保存に失敗しました',
+          contentValue: 'ログの内容を確認してください',
+          onOkPressed: () {
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    );
   }
 }
