@@ -26,7 +26,6 @@ class CloudStorageService {
       debugPrint('saveAISetting API 成功: ${response.body}');
       return true;
     } else {
-      // TODO 失敗の場合は呼び元でモーダルを表示するなどの処理を行う
       debugPrint('saveAISetting API 失敗 statusCode: ${response.statusCode}');
       return false;
     }

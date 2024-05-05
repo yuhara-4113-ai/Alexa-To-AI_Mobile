@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:equatable/equatable.dart';
+import 'package:alexa_to_ai/models/ai_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -12,7 +12,7 @@ part 'setting_screen_model.g.dart';
 /// 保存対象の項目は@HiveFieldで指定
 /// 保存する項目を変更した場合は「flutter packages pub run build_runner build」を実行して保存する実体のファイルを更新する
 @HiveType(typeId: 0)
-class SettingScreenModel extends HiveObject with EquatableMixin {
+class SettingScreenModel extends HiveObject {
   // キャラクター名(口調)
   @HiveField(0)
   String aiTone = '';
@@ -21,23 +21,75 @@ class SettingScreenModel extends HiveObject with EquatableMixin {
   @HiveField(1)
   bool isSaved = false;
 
-  SettingScreenModel();
+  // 選択した種別(ChatGPT、Geminiなど)
+  @HiveField(2)
+  String selectedType = aiType[AITypes.chatGPT]!;
 
-  // Equatableを使うことで、==演算子を使って比較できる
-  @override
-  List<Object> get props => [aiTone];
+  // 種別ごとのAIModel
+  @HiveField(3)
+  Map<String, AIModel> aiModelsPerType = {};
+
+  void setApiKeyForType(String type, AIModel aiModel) {
+    // インスタンスが共有されるため、そのまま代入ではなく個別に代入する
+    AIModel a = aiModelsPerType[type]!;
+    a.apiKey = aiModel.apiKey;
+    a.type = aiModel.type;
+    a.model = aiModel.model;
+  }
+
+  AIModel getApiKeyForType(String type) {
+    AIModel? aiModel = aiModelsPerType[type];
+    // 未設定の場合は空のAIModelを返す
+    if (aiModel == null) {
+      return AIModel();
+    }
+    return aiModel;
+  }
+
+  // コンストラクタ
+  SettingScreenModel();
 
   /// 「ローカルDB」と中身を比較
   bool compareWithLocalDB() {
     final settingModel = settingModelBox.get(settingModelBoxKey);
-    final isCompareWithLocalDB = !(this == settingModel);
+    // TODO ログに出力した項目(props)は同じ値だが、なぜか不一致になる
+    // aiModelsPerType(Map)で値は同じだが、インスタンスが違うから不一致になっている？？
+    final isCompareWithLocalDB = !settingScreenModelEquals(settingModel!);
 
-    debugPrint('box: ${settingModel.toString()}');
-    debugPrint('this: ${toString()}');
+    debugPrint('compareWithLocalDB_box: ${settingModel.toJson2()}');
+    debugPrint('compareWithLocalDB_this: ${toJson2()}');
 
-    debugPrint('isCompareWithLocalDB: $isCompareWithLocalDB');
+    debugPrint('compareWithLocalDB_result: $isCompareWithLocalDB');
 
-    return !(this == settingModel);
+    return isCompareWithLocalDB;
+  }
+
+  /// NOTE: EquatableMixinを使用していたが、廃止して自力で比較
+  /// Mapは値が同じでもインスタンスが異なれば不一致判定されてしまい、ローカルDBとの比較に使用できなくなってしまった
+  bool settingScreenModelEquals(SettingScreenModel box) {
+    return aiTone == box.aiTone &&
+        selectedType == box.selectedType &&
+        mapEquals(aiModelsPerType, box.aiModelsPerType);
+  }
+
+  bool mapEquals(
+      Map<String, AIModel> aiModelsPerType, Map<String, AIModel> boxMap) {
+    // 第一チェック(設定が異なれば大体ここで弾ける)
+    if (aiModelsPerType.length != boxMap.length) {
+      return false;
+    }
+    // 第二チェック(Mapの中身を比較)
+    for (var key in aiModelsPerType.keys) {
+      AIModel model = aiModelsPerType[key]!;
+      AIModel boxModel = boxMap[key]!;
+      // 各項目で異なる物が1つでもあれば不一致とする
+      if (model.type != boxModel.type ||
+          model.apiKey != boxModel.apiKey ||
+          model.model != boxModel.model) {
+        return false;
+      }
+    }
+    return true;
   }
 
   String toJson() {
@@ -45,6 +97,16 @@ class SettingScreenModel extends HiveObject with EquatableMixin {
       // user_idはログイン機能が必要になって実装したら適宜変更する。とりあえず固定値
       'user_id': '1',
       'tone': aiTone,
+      'selectedType': selectedType,
+    });
+  }
+
+  String toJson2() {
+    return jsonEncode({
+      'aiTone': aiTone,
+      'isSaved': isSaved,
+      'selectedType': selectedType,
+      'aiModelsPerType': aiModelsPerType,
     });
   }
 }
