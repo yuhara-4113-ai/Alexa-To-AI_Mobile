@@ -16,21 +16,19 @@ class AIModelAdapter extends TypeAdapter<AIModel> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return AIModel()
-      ..type = fields[0] as String
-      ..apiKey = fields[1] as String
-      ..model = fields[2] as String;
+    return AIModel(
+      apiKey: fields[0] as String,
+      model: fields[1] as String,
+    );
   }
 
   @override
   void write(BinaryWriter writer, AIModel obj) {
     writer
-      ..writeByte(3)
-      ..writeByte(0)
-      ..write(obj.type)
-      ..writeByte(1)
-      ..write(obj.apiKey)
       ..writeByte(2)
+      ..writeByte(0)
+      ..write(obj.apiKey)
+      ..writeByte(1)
       ..write(obj.model);
   }
 

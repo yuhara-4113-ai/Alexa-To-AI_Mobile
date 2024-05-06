@@ -1,6 +1,4 @@
 // 必要なパッケージとファイルをインポート
-import 'dart:convert';
-
 import 'package:alexa_to_ai/models/ai_model.dart';
 import 'package:flutter/material.dart'; // Flutterのマテリアルデザインパッケージ
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -68,6 +66,8 @@ class SettingScreen extends HookConsumerWidget {
       // コンポーネントがアンマウントされるときにリスナーを削除します
       return () => selectedType.removeListener(() {});
     }, []);
+
+    ValueNotifier<bool> obscureText = useState<bool>(true);
 
     // Scaffoldを使用して基本的なレイアウトを作成
     return Scaffold(
@@ -139,10 +139,24 @@ class SettingScreen extends HookConsumerWidget {
               },
             ),
             TextFormField(
-              controller: apiKeyController, // 初期値
-              decoration: const InputDecoration(labelText: 'APIキー'),
-              // TODO APIキーの入力内容は隠す
-              // obscureText: true,
+              // 値を管理(初期値、変更)するcontroller
+              controller: apiKeyController,
+              // APIキーの表示/非表示
+              obscureText: obscureText.value,
+              decoration: InputDecoration(
+                labelText: 'APIキー',
+                // APIキーの入力内容は表示/非表示を切り替えられるようにする
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    // _obscureTextの値に応じてアイコンを切り替える
+                    obscureText.value ? Icons.visibility : Icons.visibility_off,
+                  ),
+                  onPressed: () {
+                    // _obscureTextの値を反転
+                    obscureText.value = !obscureText.value;
+                  },
+                ),
+              ),
             ),
             // 保存ボタン
             const SizedBox(height: 20), // フォームとボタンの間にスペースを作成します
@@ -209,24 +223,15 @@ class SettingScreen extends HookConsumerWidget {
     final apiKeyController = useTextEditingController();
 
     // 初期化時にテキストフィールドの初期値を設定します
-    AIModel aiModel = settingScreenModelProvider
-        .getApiKeyForType(settingScreenModelProvider.selectedType);
+    AIModel aiModel = settingScreenModelProvider.getApiKeyForType();
     apiKeyController.text = aiModel.apiKey;
 
     // テキストフィールドの内容が変更されたときに呼び出されるリスナーを追加
     useEffect(() {
       apiKeyController.addListener(() {
-        debugPrint('apiKeyController.text: ${apiKeyController.text}');
-        // TODO 変更する度に状態保持に反映しており、無駄がある。フォーカスアウト時だけ検知できれば最低限の反映で済むが、実装が難しそうなので一旦このまま
+        // 現在のAI種別に対応するAPIキーを更新するため、都度取得する
+        AIModel aiModel = settingScreenModelProvider.getApiKeyForType();
         aiModel.apiKey = apiKeyController.text;
-        debugPrint('aiModel.apiKey : ${aiModel.apiKey}');
-
-        // 種別ごとのAPIキーを設定
-        settingScreenModelProvider.setApiKeyForType(
-            settingScreenModelProvider.selectedType, aiModel);
-
-        debugPrint(
-            'settingScreenModelProvider.aiModelsPerType : ${jsonEncode(settingScreenModelProvider.aiModelsPerType)}');
 
         // boxとの差分状態を更新
         isCompareWithLocalDB.value =
@@ -247,15 +252,12 @@ class SettingScreen extends HookConsumerWidget {
       ..aiTone = model.aiTone
       ..isSaved = true
       ..selectedType = model.selectedType
-      ..aiModelsPerType = Map.from(model.aiModelsPerType);
+      ..aiModelsPerType = model.copyApiKeyForType();
 
     // ローカルDBに保存
     await settingModelBox.put(settingModelBoxKey, saveData);
 
     debugPrint('_saveSettings box: ${saveData.toJson2()}');
-
-    // TODO 以下のようにsave()でboxkeyを意識しないで保存できるようにしたい
-    // model.save(){}
 
     // boxとの差分状態を更新
     isCompareWithLocalDB.value = model.compareWithLocalDB();
@@ -284,7 +286,7 @@ class SettingScreen extends HookConsumerWidget {
     settingScreenModelProvider.aiTone = settingModel!.aiTone;
     settingScreenModelProvider.selectedType = settingModel.selectedType;
     settingScreenModelProvider.aiModelsPerType =
-        Map.from(settingModel.aiModelsPerType);
+        settingModel.copyApiKeyForType();
   }
 
   /// 保存に失敗した場合にアラートを表示

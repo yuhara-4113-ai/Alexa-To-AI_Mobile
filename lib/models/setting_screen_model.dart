@@ -27,18 +27,30 @@ class SettingScreenModel extends HiveObject {
 
   // 種別ごとのAIModel
   @HiveField(3)
-  Map<String, AIModel> aiModelsPerType = {};
+  Map<String, AIModel> aiModelsPerType;
+
+  // コンストラクタ
+  SettingScreenModel() : aiModelsPerType = {} {
+    aiModelsPerType = initApiKeyForType();
+  }
+
+  Map<String, AIModel> initApiKeyForType() {
+    Map<String, AIModel> initMap = {};
+    for (var key in aiType.keys) {
+      initMap[aiType[key]!] = AIModel();
+    }
+    return initMap;
+  }
 
   void setApiKeyForType(String type, AIModel aiModel) {
     // インスタンスが共有されるため、そのまま代入ではなく個別に代入する
     AIModel a = aiModelsPerType[type]!;
     a.apiKey = aiModel.apiKey;
-    a.type = aiModel.type;
     a.model = aiModel.model;
   }
 
-  AIModel getApiKeyForType(String type) {
-    AIModel? aiModel = aiModelsPerType[type];
+  AIModel getApiKeyForType() {
+    AIModel? aiModel = aiModelsPerType[selectedType];
     // 未設定の場合は空のAIModelを返す
     if (aiModel == null) {
       return AIModel();
@@ -46,14 +58,15 @@ class SettingScreenModel extends HiveObject {
     return aiModel;
   }
 
-  // コンストラクタ
-  SettingScreenModel();
+  /// AIModelのコピーを返す(Mapの値が独自classのため、ディープコピーする必要がある)
+  Map<String, AIModel> copyApiKeyForType() {
+    return aiModelsPerType
+        .map((key, value) => MapEntry(key, AIModel.from(value)));
+  }
 
   /// 「ローカルDB」と中身を比較
   bool compareWithLocalDB() {
     final settingModel = settingModelBox.get(settingModelBoxKey);
-    // TODO ログに出力した項目(props)は同じ値だが、なぜか不一致になる
-    // aiModelsPerType(Map)で値は同じだが、インスタンスが違うから不一致になっている？？
     final isCompareWithLocalDB = !settingScreenModelEquals(settingModel!);
 
     debugPrint('compareWithLocalDB_box: ${settingModel.toJson2()}');
@@ -83,15 +96,14 @@ class SettingScreenModel extends HiveObject {
       AIModel model = aiModelsPerType[key]!;
       AIModel boxModel = boxMap[key]!;
       // 各項目で異なる物が1つでもあれば不一致とする
-      if (model.type != boxModel.type ||
-          model.apiKey != boxModel.apiKey ||
-          model.model != boxModel.model) {
+      if (model.apiKey != boxModel.apiKey || model.model != boxModel.model) {
         return false;
       }
     }
     return true;
   }
 
+  // TODO クラウド保存用のJSONを返しているため、名前を適切に変更する
   String toJson() {
     return jsonEncode({
       // user_idはログイン機能が必要になって実装したら適宜変更する。とりあえず固定値
@@ -110,3 +122,16 @@ class SettingScreenModel extends HiveObject {
     });
   }
 }
+
+enum AITypes {
+  chatGPT,
+  gemini,
+  claude,
+}
+
+// AITypeをベタ書きするのはここだけ
+final Map<AITypes, String> aiType = {
+  AITypes.chatGPT: 'ChatGPT',
+  AITypes.gemini: 'Gemini',
+  AITypes.claude: 'Claude',
+};
