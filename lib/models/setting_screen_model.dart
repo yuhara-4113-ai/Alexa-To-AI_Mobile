@@ -69,8 +69,8 @@ class SettingScreenModel extends HiveObject {
     final settingModel = settingModelBox.get(settingModelBoxKey);
     final isCompareWithLocalDB = !settingScreenModelEquals(settingModel!);
 
-    debugPrint('compareWithLocalDB_box: ${settingModel.toJson2()}');
-    debugPrint('compareWithLocalDB_this: ${toJson2()}');
+    debugPrint('compareWithLocalDB_box: ${settingModel.toJson()}');
+    debugPrint('compareWithLocalDB_this: ${toJson()}');
 
     debugPrint('compareWithLocalDB_result: $isCompareWithLocalDB');
 
@@ -103,17 +103,18 @@ class SettingScreenModel extends HiveObject {
     return true;
   }
 
-  // TODO クラウド保存用のJSONを返しているため、名前を適切に変更する
-  String toJson() {
+  // クラウド保存用のJSONを返す
+  String convertJsonToCloudSave() {
     return jsonEncode({
       // user_idはログイン機能が必要になって実装したら適宜変更する。とりあえず固定値
       'user_id': '1',
       'tone': aiTone,
-      'selectedType': selectedType,
+      'selected_ai': selectedType,
+      'ai_info': getApiKeyForType(),
     });
   }
 
-  String toJson2() {
+  String toJson() {
     return jsonEncode({
       'aiTone': aiTone,
       'isSaved': isSaved,

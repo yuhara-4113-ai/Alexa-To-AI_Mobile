@@ -67,7 +67,8 @@ class SettingScreen extends HookConsumerWidget {
       return () => selectedType.removeListener(() {});
     }, []);
 
-    ValueNotifier<bool> obscureText = useState<bool>(true);
+    // APIキーの表示/非表示を切り替えるための状態を保持(画面初期表示時は非表示)
+    ValueNotifier<bool> apiKeyObscureStatus = useState<bool>(true);
 
     // Scaffoldを使用して基本的なレイアウトを作成
     return Scaffold(
@@ -142,18 +143,20 @@ class SettingScreen extends HookConsumerWidget {
               // 値を管理(初期値、変更)するcontroller
               controller: apiKeyController,
               // APIキーの表示/非表示
-              obscureText: obscureText.value,
+              obscureText: apiKeyObscureStatus.value,
               decoration: InputDecoration(
                 labelText: 'APIキー',
                 // APIキーの入力内容は表示/非表示を切り替えられるようにする
                 suffixIcon: IconButton(
                   icon: Icon(
                     // _obscureTextの値に応じてアイコンを切り替える
-                    obscureText.value ? Icons.visibility : Icons.visibility_off,
+                    apiKeyObscureStatus.value
+                        ? Icons.visibility
+                        : Icons.visibility_off,
                   ),
                   onPressed: () {
                     // _obscureTextの値を反転
-                    obscureText.value = !obscureText.value;
+                    apiKeyObscureStatus.value = !apiKeyObscureStatus.value;
                   },
                 ),
               ),
@@ -190,6 +193,13 @@ class SettingScreen extends HookConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  DropdownMenuItem<AITypes> buildDropdownMenuItem(AITypes aiType) {
+    return DropdownMenuItem<AITypes>(
+      value: aiType,
+      child: Text(aiType.toString().split('.').last),
     );
   }
 
@@ -257,7 +267,7 @@ class SettingScreen extends HookConsumerWidget {
     // ローカルDBに保存
     await settingModelBox.put(settingModelBoxKey, saveData);
 
-    debugPrint('_saveSettings box: ${saveData.toJson2()}');
+    debugPrint('_saveSettings box: ${saveData.toJson()}');
 
     // boxとの差分状態を更新
     isCompareWithLocalDB.value = model.compareWithLocalDB();
@@ -280,8 +290,8 @@ class SettingScreen extends HookConsumerWidget {
   void _setViewnModel(SettingScreenModel settingScreenModelProvider) {
     final settingModel = settingModelBox.get(settingModelBoxKey);
     debugPrint('ローカルDBの設定を状態保持中のmodelに反映');
-    debugPrint('_setViewnModel box: ${settingModel?.toJson2()}');
-    debugPrint('_setViewnModel this: ${settingScreenModelProvider.toJson2()}');
+    debugPrint('_setViewnModel box: ${settingModel?.toJson()}');
+    debugPrint('_setViewnModel this: ${settingScreenModelProvider.toJson()}');
 
     settingScreenModelProvider.aiTone = settingModel!.aiTone;
     settingScreenModelProvider.selectedType = settingModel.selectedType;

@@ -12,6 +12,8 @@ class CloudStorageService {
     // 実行するAPIはパブリックのため、簡易的なapiKeyで認証をしている(アプリは公開しないため、apiKeyは.envから取得)
     // ※アプリを公開するなら解析されてapiKeyが盗まれる可能性がある。その場合はちゃんとした認証(Cognitoなど)を行った上でAPIを実行する
     String apiKey = env[EnvKey.awsXApiKey]!;
+    String body = saveData.convertJsonToCloudSave();
+    debugPrint('saveAISetting body: $body');
 
     final http.Response response = await http.post(
       Uri.parse(saveAISettingUrl),
@@ -19,7 +21,7 @@ class CloudStorageService {
         'Content-Type': 'application/json; charset=UTF-8',
         'x-api-key': apiKey,
       },
-      body: saveData.toJson(),
+      body: body,
     );
 
     if (response.statusCode == 200) {
