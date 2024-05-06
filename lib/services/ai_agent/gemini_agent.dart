@@ -1,12 +1,18 @@
 import 'package:alexa_to_ai/models/ai_model.dart';
 import 'package:alexa_to_ai/services/ai_agent/ai_agent.dart';
+import 'package:flutter/material.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 
 class GeminiAgent implements AIAgent {
   @override
   Future<String> sendMessage(String prompt, AIModel aiModel) async {
-    // TODO 未実装。とりあえずは非同期で固定文字列を返却
-    await Future.delayed(const Duration(seconds: 1));
-    // 非同期操作が完了したら、String型の結果を返します。
-    return 'Gemini response. apiKey: ${aiModel.apiKey}';
+    final model = GenerativeModel(model: 'gemini-pro', apiKey: aiModel.apiKey);
+
+    final content = [Content.text(prompt)];
+    final response = await model.generateContent(content);
+
+    debugPrint('Response from gemini-pro: $response');
+
+    return response.text!;
   }
 }
