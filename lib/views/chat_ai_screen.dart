@@ -53,7 +53,9 @@ class ChatAIScreenState extends State<ChatAIScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(ChatAIScreen.name), // アプリバーのタイトル
+        // アプリバーのタイトル以下のように使用中のAIを表示
+        // AIチャット画面(ChatGPT)
+        title: Text('${ChatAIScreen.name}(${settingModel!.selectedType})'),
       ),
       // ハンバーガーメニュー
       drawer: CustomDrawer(
