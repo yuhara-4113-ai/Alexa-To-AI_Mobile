@@ -35,6 +35,8 @@ dependencies:
   flutter_chat_types: ^3.6.2
   # Google AIのAPIリクエストに使用
   google_generative_ai: ^0.3.2
+  # anthropic(Claude)のAPIリクエストに使用
+  anthropic_dart: ^1.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

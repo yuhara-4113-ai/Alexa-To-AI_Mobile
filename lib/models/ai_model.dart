@@ -50,5 +50,9 @@ final Map<AITypes, String> aiType = {
 final Map<AITypes, List<String>> modelConfig = {
   AITypes.chatGPT: ['gpt-3.5-turbo', 'gpt-4-turbo'],
   AITypes.gemini: ['gemini-pro'],
-  AITypes.claude: ['claude'],
+  AITypes.claude: [
+    'claude-3-haiku-20240307',
+    'claude-3-sonnet-20240229',
+    'claude-3-opus-20240229'
+  ],
 };
