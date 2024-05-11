@@ -350,7 +350,7 @@ class SettingScreen extends HookConsumerWidget {
       margin: const EdgeInsets.only(bottom: 10.0), // 下からのマージンを10に設定
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10)), // 角丸の半径を設定
-      duration: const Duration(seconds: 2), // 表示時間を2秒に設定
+      duration: const Duration(milliseconds: 1200), // 表示時間
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }

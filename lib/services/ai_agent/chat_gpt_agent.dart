@@ -4,15 +4,9 @@ import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter/material.dart';
 
 class ChatGPTAgent implements AIAgent {
-  // AIのリクエストなどを管理するクラス(実行時に各AIの分岐で設定)
-  // late ChatModel _chatModel;
-
   @override
   Future<String> sendMessage(String prompt, AIModel aiModel) async {
-    OpenAI.apiKey = aiModel.apiKey;
-    OpenAI.requestsTimeOut = const Duration(seconds: 60);
-    // パッケージの操作ログを出力
-    OpenAI.showLogs = true;
+    setOpenAIClient(aiModel.apiKey);
 
     final userMessage = OpenAIChatCompletionChoiceMessageModel(
       content: [
@@ -45,10 +39,18 @@ class ChatGPTAgent implements AIAgent {
       // TODO 設定画面から変更できるようにする
       temperature: 0.2,
     );
+
     // TODO 入出力のtoken(total_tokens)を保持し、このアプリでどのくらいのtoken数(料金)を消費しているかを表示したい
     debugPrint('totalTokens: ${respnse.usage.totalTokens.toString()}');
     String responseText = respnse.choices.first.message.content![0].text!;
     debugPrint('responseText: $responseText');
     return responseText;
+  }
+
+  void setOpenAIClient(String apiKey) {
+    OpenAI.apiKey = apiKey;
+    OpenAI.requestsTimeOut = const Duration(seconds: 60);
+    // パッケージの操作ログを出力
+    OpenAI.showLogs = true;
   }
 }
