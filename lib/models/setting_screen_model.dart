@@ -37,7 +37,7 @@ class SettingScreenModel extends HiveObject {
   Map<String, AIModel> initApiKeyForType() {
     Map<String, AIModel> initMap = {};
     for (var key in aiType.keys) {
-      initMap[aiType[key]!] = AIModel();
+      initMap[aiType[key]!] = AIModel(apiKey: '', model: modelConfig[key]![0]);
     }
     return initMap;
   }
@@ -49,9 +49,9 @@ class SettingScreenModel extends HiveObject {
     a.model = aiModel.model;
   }
 
-  AIModel getApiKeyForType() {
+  AIModel getAIModel() {
     AIModel? aiModel = aiModelsPerType[selectedType];
-    // 未設定の場合は空のAIModelを返す
+    // 未設定の場合はChatGPTを設定したAIModelを返す
     if (aiModel == null) {
       return AIModel();
     }
@@ -116,7 +116,7 @@ class SettingScreenModel extends HiveObject {
       'user_id': '1',
       'tone': aiTone,
       'selected_ai': selectedType,
-      'ai_info': getApiKeyForType(),
+      'ai_info': getAIModel(),
     });
   }
 
@@ -129,16 +129,3 @@ class SettingScreenModel extends HiveObject {
     });
   }
 }
-
-enum AITypes {
-  chatGPT,
-  gemini,
-  claude,
-}
-
-// AITypeをベタ書きするのはここだけ
-final Map<AITypes, String> aiType = {
-  AITypes.chatGPT: 'ChatGPT',
-  AITypes.gemini: 'Gemini',
-  AITypes.claude: 'Claude',
-};

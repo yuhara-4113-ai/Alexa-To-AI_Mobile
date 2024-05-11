@@ -1,5 +1,6 @@
 // 必要なパッケージとファイルをインポート
 import 'package:alexa_to_ai/models/ai_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart'; // Flutterのマテリアルデザインパッケージ
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -53,12 +54,29 @@ class SettingScreen extends HookConsumerWidget {
         settingScreenModelProvider, isCompareWithLocalDB);
 
     // AIの種別(ChatGPT、Geminiなど)
+    ValueNotifier<String> selectedModel =
+        useState<String>(settingScreenModelProvider.getAIModel().model);
+    // 監視対象が変更されたときに呼び出されるリスナーを追加
+    useEffect(() {
+      selectedModel.addListener(() {
+        settingScreenModelProvider.getAIModel().model = selectedModel.value;
+        // boxとの差分状態を更新
+        isCompareWithLocalDB.value =
+            settingScreenModelProvider.compareWithLocalDB();
+      });
+      // コンポーネントがアンマウントされるときにリスナーを削除します
+      return () => selectedModel.removeListener(() {});
+    }, []);
+
+    // AIの種別(ChatGPT、Geminiなど)
     ValueNotifier<String> selectedType =
         useState<String>(settingScreenModelProvider.selectedType);
     // テキストフィールドの内容が変更されたときに呼び出されるリスナーを追加
     useEffect(() {
       selectedType.addListener(() {
         settingScreenModelProvider.selectedType = selectedType.value;
+        // 連動するAIのモデル(プルダウン)も該当のモデルで更新
+        selectedModel.value = settingScreenModelProvider.getAIModel().model;
         // boxとの差分状態を更新
         isCompareWithLocalDB.value =
             settingScreenModelProvider.compareWithLocalDB();
@@ -122,12 +140,11 @@ class SettingScreen extends HookConsumerWidget {
             ),
             const SizedBox(height: 30), // フォームとボタンの間にスペースを作成します
             const Text(
-              '使用中のAI',
+              '使用するAI',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             DropdownButton<String>(
               value: selectedType.value,
-              hint: const Text('ジャンルを選択してください'),
               items:
                   aiType.values.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
@@ -160,6 +177,31 @@ class SettingScreen extends HookConsumerWidget {
                   },
                 ),
               ),
+            ),
+            FormField(
+              builder: (FormFieldState<String> state) {
+                return InputDecorator(
+                  decoration: const InputDecoration(
+                    labelText: 'モデル',
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: selectedModel.value,
+                      items: modelConfig[settingScreenModelProvider
+                              .getKeyFromSelectedType()]!
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        selectedModel.value = newValue!;
+                      },
+                    ),
+                  ),
+                );
+              },
             ),
             // 保存ボタン
             const SizedBox(height: 20), // フォームとボタンの間にスペースを作成します
@@ -233,14 +275,14 @@ class SettingScreen extends HookConsumerWidget {
     final apiKeyController = useTextEditingController();
 
     // 初期化時にテキストフィールドの初期値を設定します
-    AIModel aiModel = settingScreenModelProvider.getApiKeyForType();
+    AIModel aiModel = settingScreenModelProvider.getAIModel();
     apiKeyController.text = aiModel.apiKey;
 
     // テキストフィールドの内容が変更されたときに呼び出されるリスナーを追加
     useEffect(() {
       apiKeyController.addListener(() {
         // 現在のAI種別に対応するAPIキーを更新するため、都度取得する
-        AIModel aiModel = settingScreenModelProvider.getApiKeyForType();
+        AIModel aiModel = settingScreenModelProvider.getAIModel();
         aiModel.apiKey = apiKeyController.text;
 
         // boxとの差分状態を更新

@@ -1,7 +1,6 @@
 // Flutterとその他のパッケージをインポート
 import 'package:alexa_to_ai/database/database.dart';
 import 'package:alexa_to_ai/models/ai_model.dart';
-import 'package:alexa_to_ai/models/setting_screen_model.dart';
 import 'package:alexa_to_ai/services/ai_agent/ai_agent.dart';
 import 'package:alexa_to_ai/services/ai_agent/chat_gpt_agent.dart';
 import 'package:alexa_to_ai/services/ai_agent/claude_agent.dart';
@@ -19,7 +18,7 @@ class AIService {
 
     // 設定画面で保存した内容をローカルDBから取得
     final settingModel = settingModelBox.get(settingModelBoxKey);
-    AIModel aiModel = settingModel!.getApiKeyForType();
+    AIModel aiModel = settingModel!.getAIModel();
 
     // 選択したAIの種別によって、処理を分ける
     switch (settingModel.getKeyFromSelectedType()) {
