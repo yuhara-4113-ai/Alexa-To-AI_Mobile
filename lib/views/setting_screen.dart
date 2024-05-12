@@ -1,19 +1,12 @@
-// 必要なパッケージとファイルをインポート
 import 'package:alexa_to_ai/models/ai_model.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart'; // Flutterのマテリアルデザインパッケージ
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import 'package:alexa_to_ai/database/database.dart';
 import 'package:alexa_to_ai/models/setting_screen_model.dart';
 import 'package:alexa_to_ai/providers/setting_screen_model_provider.dart';
 import 'package:alexa_to_ai/services/cloud_storage_service.dart';
 import 'package:alexa_to_ai/widgets/alert_dialog.dart';
-import 'package:alexa_to_ai/widgets/drawer.dart';
-
-import 'home_screen.dart';
-import 'chat_ai_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final cloudStorageService = CloudStorageService();
 
@@ -92,31 +85,6 @@ class SettingScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(name), // アプリバーのタイトル
-      ),
-      drawer: CustomDrawer(
-        // TODO 今はtilesを各画面でコピペで定義している状態。各画面で自画面は非表示にできたら、シンプルにできる
-        tiles: [
-          ListTile(
-            title: Text(HomeScreen.name),
-            onTap: () {
-              // ホーム画面への遷移
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
-              );
-            },
-          ),
-          ListTile(
-            title: Text(ChatAIScreen.name),
-            onTap: () {
-              // AIチャット画面への遷移
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const ChatAIScreen()),
-              );
-            },
-          ),
-        ],
       ),
       // 画面の主要な部分
       body: SingleChildScrollView(
@@ -216,20 +184,6 @@ class SettingScreen extends HookConsumerWidget {
                   : null,
               child: Text(
                 isCompareWithLocalDB.value ? '変更内容を保存' : '設定に変更はありません',
-              ),
-            ),
-            // チャット画面への遷移ボタン
-            const SizedBox(height: 20), // フォームとボタンの間にスペースを作成します
-            ElevatedButton(
-              onPressed: () {
-                // AIチャット画面への遷移
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ChatAIScreen()),
-                );
-              },
-              child: const Text(
-                'AIチャット画面でお試し',
               ),
             ),
           ],

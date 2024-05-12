@@ -6,13 +6,8 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 
 import 'package:alexa_to_ai/database/database.dart';
-import 'package:alexa_to_ai/models/setting_screen_model.dart';
 import 'package:alexa_to_ai/services/ai_service.dart';
 import 'package:alexa_to_ai/widgets/alert_dialog.dart';
-import 'package:alexa_to_ai/widgets/drawer.dart';
-
-import 'home_screen.dart';
-import 'setting_screen.dart';
 
 class ChatAIScreen extends StatefulWidget {
   const ChatAIScreen({super.key});
@@ -56,34 +51,6 @@ class ChatAIScreenState extends State<ChatAIScreen> {
         // アプリバーのタイトル以下のように使用中のAIを表示
         // AIチャット画面(ChatGPT)
         title: Text('${ChatAIScreen.name}(${settingModel!.selectedType})'),
-      ),
-      // ハンバーガーメニュー
-      drawer: CustomDrawer(
-        // TODO 今はtilesを各画面でコピペで定義している状態。各画面で自画面は非表示にできたら、シンプルにできる
-        tiles: [
-          ListTile(
-            title: Text(HomeScreen.name),
-            onTap: () {
-              // ホーム画面への遷移
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
-              );
-            },
-          ),
-          ListTile(
-            title: Text(SettingScreen.name),
-            onTap: () {
-              // 設定画面への遷移
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => SettingScreen(
-                        settingScreenModel: SettingScreenModel())),
-              );
-            },
-          ),
-        ],
       ),
       // 画面の主要な部分
       body: Chat(

@@ -1,10 +1,8 @@
-// Flutterとその他のパッケージをインポート
+import 'package:alexa_to_ai/database/database.dart';
+import 'package:alexa_to_ai/widgets/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'database/database.dart';
-import 'views/home_screen.dart';
 
 // アプリケーションのエントリーポイント
 void main() async {
@@ -30,7 +28,7 @@ class App extends StatelessWidget {
             // こことpubspec.yamlのfonts.familyの値を合わせないと指定したフォントが適用されない
             fontFamily: 'NotoSansJP',
           ),
-          home: const HomeScreen(),
+          home: const Footer(),
         ),
       ),
     );
