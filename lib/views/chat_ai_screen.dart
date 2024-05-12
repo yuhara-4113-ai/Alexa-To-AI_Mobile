@@ -23,9 +23,15 @@ class ChatAIScreenState extends State<ChatAIScreen> {
   // 設定画面で保存した内容をローカルDBから取得
   final settingModel = settingModelBox.get(settingModelBoxKey);
 
-  List<types.Message> messages = []; // メッセージを格納するリスト
-  final _user = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3ac');
-  final _ai = const types.User(id: '82091008-a484-4a89-ae75-hjgvhkjbig44');
+  // メッセージを格納するリスト
+  List<types.Message> messages = [];
+
+  // AIのユーザ情報(名前に使用するAIの情報を使用するので後で初期化)
+  late types.User _ai;
+  // ユーザ情報
+  final _user = const types.User(
+    id: 'user',
+  );
 
   late AIService aiService;
 
@@ -34,10 +40,19 @@ class ChatAIScreenState extends State<ChatAIScreen> {
   void initState() {
     super.initState();
     aiService = AIService();
+
+    // チャットで表示するAIのユーザ情報を初期化
+    _ai = types.User(
+      id: 'ai',
+      // 使用するAI
+      firstName: settingModel!.selectedType,
+      // AIのモデル
+      lastName: settingModel!.getAIModel().model,
+    );
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // ローカルDBに未保存のない場合(初期インストール後に設定画面で保存してない場合など)
       // アラートを表示し、保存を促す
-      final settingModel = settingModelBox.get(settingModelBoxKey);
       if (!settingModel!.isSaved) {
         _showAlertDialog();
       }
@@ -54,9 +69,16 @@ class ChatAIScreenState extends State<ChatAIScreen> {
       ),
       // 画面の主要な部分
       body: Chat(
+        theme: const DefaultChatTheme(
+          primaryColor: Colors.blueAccent, // メッセージの背景色の変更
+          userAvatarNameColors: [Colors.blueAccent], // ユーザー名の文字色の変更
+          //backgroundColor: Colors.black12, // チャット画面の背景色の変更
+        ),
         user: _user,
         messages: messages,
         onSendPressed: _onPressedSendButton,
+        showUserAvatars: true,
+        showUserNames: true,
       ),
     );
   }
@@ -102,17 +124,36 @@ class ChatAIScreenState extends State<ChatAIScreen> {
   void _sendMessageToAi(String message) async {
     // ユーザの入力文字列に設定内容を付与し、AIに送信するプロンプトを作成
     String prompt = createPrompt(message);
+
+    // AIの処理時間の計測開始
+    Stopwatch timeTracker = Stopwatch()..start();
+
     // AIにリクエストを送信
     aiService.sendMessageToAi(prompt).then((responseText) {
       // AIからの返答をメッセージとして表示
-      final textMessage = types.TextMessage(
+      final aiTextMessage = types.TextMessage(
         author: _ai,
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: randomString(),
         text: responseText,
       );
 
-      _addMessage(textMessage);
+      // AIの処理時間の計測終了
+      timeTracker.stop();
+
+      // 処理時間を秒単位で取得
+      double time = timeTracker.elapsedMilliseconds / 1000;
+      final timeTrackerTextMessage = types.TextMessage(
+        author: _ai,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        id: randomString(),
+        text: '処理時間: $time秒',
+      );
+      // 処理時間を表示
+      _addMessage(timeTrackerTextMessage);
+
+      // AIのメッセージを表示
+      _addMessage(aiTextMessage);
     });
   }
 
@@ -121,13 +162,13 @@ class ChatAIScreenState extends State<ChatAIScreen> {
     String aiTonePrompt = '';
     String aiTone = settingModel!.aiTone;
     if (aiTone.isNotEmpty) {
-      aiTonePrompt = '口調は$aiToneで';
+      aiTonePrompt = '口調は$aiTone。';
     }
     // TODO 最大文字数を設定画面でも可能に
-    String maxCharLimit = '400文字以内で';
+    String maxCharLimit = '解答は200文字以内。';
 
     // ユーザの入力文字列に設定内容を付与し、AIに送信するプロンプトを作成
-    String prompt = aiTonePrompt + maxCharLimit + message;
+    String prompt = maxCharLimit + aiTonePrompt + message;
     return prompt;
   }
 
