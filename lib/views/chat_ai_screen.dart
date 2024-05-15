@@ -165,7 +165,7 @@ class ChatAIScreenState extends State<ChatAIScreen> {
       aiTonePrompt = '口調は$aiTone。';
     }
     // TODO 最大文字数を設定画面でも可能に
-    String maxCharLimit = '解答は200文字以内。';
+    String maxCharLimit = '回答は200文字以内。';
 
     // ユーザの入力文字列に設定内容を付与し、AIに送信するプロンプトを作成
     String prompt = maxCharLimit + aiTonePrompt + message;

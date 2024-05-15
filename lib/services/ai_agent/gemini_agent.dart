@@ -6,7 +6,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 class GeminiAgent implements AIAgent {
   @override
   Future<String> sendMessage(String prompt, AIModel aiModel) async {
-    final model = GenerativeModel(model: 'gemini-pro', apiKey: aiModel.apiKey);
+    final model = GenerativeModel(model: aiModel.model, apiKey: aiModel.apiKey);
 
     final content = [Content.text(prompt)];
     final response = await model.generateContent(content);
