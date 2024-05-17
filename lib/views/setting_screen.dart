@@ -4,6 +4,11 @@ import 'package:alexa_to_ai/models/setting_screen_model.dart';
 import 'package:alexa_to_ai/providers/setting_screen_model_provider.dart';
 import 'package:alexa_to_ai/services/cloud_storage_service.dart';
 import 'package:alexa_to_ai/widgets/alert_dialog.dart';
+import 'package:alexa_to_ai/widgets/elevated_button.dart';
+import 'package:alexa_to_ai/widgets/info_snack_bar.dart';
+import 'package:alexa_to_ai/widgets/labeled_dropdown_field.dart';
+import 'package:alexa_to_ai/widgets/labeled_input_field.dart';
+import 'package:alexa_to_ai/widgets/section_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -46,7 +51,7 @@ class SettingScreen extends HookConsumerWidget {
     TextEditingController apiKeyController = createApiKeyController(
         settingScreenModelProvider, isCompareWithLocalDB);
 
-    // AIの種別(ChatGPT、Geminiなど)
+    // AIのモデル(GPT3.5Turbo、GPT4Turboなど)
     ValueNotifier<String> selectedModel =
         useState<String>(settingScreenModelProvider.getAIModel().model);
     // 監視対象が変更されたときに呼び出されるリスナーを追加
@@ -79,123 +84,121 @@ class SettingScreen extends HookConsumerWidget {
     }, []);
 
     // APIキーの表示/非表示を切り替えるための状態を保持(画面初期表示時は非表示)
-    ValueNotifier<bool> apiKeyObscureStatus = useState<bool>(true);
+    ValueNotifier<bool> isApiKeyVisible = useState<bool>(true);
 
     // Scaffoldを使用して基本的なレイアウトを作成
     return Scaffold(
       appBar: AppBar(
         title: Text(name), // アプリバーのタイトル
       ),
-      // 画面の主要な部分
+      // SingleChildScrollViewでラップして、画面が小さくなったときにスクロールできるようにする
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          // フォームの項目(定義順に縦に並べる)
-          children: [
-            const Text(
-              'AIのレスポンス',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            // 口調/キャラクター名の入力フォーム
-            TextField(
-              // TODO TextFieldの入力中に画面描画が行われると、フォーカスが失われるため、キーボードの予測変換が閉じてしまう
-              // 上記の解消：keyを定義し、TextFieldの状態を保持する
-              // ⇨ダメだった
-              key: const Key('aiToneTextFieldKey'),
-              controller: aiToneController, // 初期値
-              decoration: const InputDecoration(labelText: '口調/キャラクター名'),
-            ),
-            const SizedBox(height: 30), // フォームとボタンの間にスペースを作成します
-            const Text(
-              '使用するAI',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            DropdownButton<String>(
-              value: selectedType.value,
-              items:
-                  aiType.values.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                selectedType.value = newValue!;
-              },
-            ),
-            TextFormField(
-              // 値を管理(初期値、変更)するcontroller
-              controller: apiKeyController,
-              // APIキーの表示/非表示
-              obscureText: apiKeyObscureStatus.value,
-              decoration: InputDecoration(
-                labelText: 'APIキー',
-                // APIキーの入力内容は表示/非表示を切り替えられるようにする
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    // _obscureTextの値に応じてアイコンを切り替える
-                    apiKeyObscureStatus.value
-                        ? Icons.visibility
-                        : Icons.visibility_off,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SectionTitle(title: 'AIのレスポンス'),
+              const SizedBox(height: 8.0),
+              Card(
+                elevation: 4.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      // 口調/キャラクター名の入力フォーム
+                      // TODO TextFieldの入力中に画面描画が行われると、フォーカスが失われるため、キーボードの予測変換が閉じてしまう
+                      LabeledInputField(
+                        label: '口調/キャラクター名',
+                        controller: aiToneController,
+                        placeholder: 'ツンデレ、スポンジボブなど',
+                      ),
+                    ],
                   ),
-                  onPressed: () {
-                    // _obscureTextの値を反転
-                    apiKeyObscureStatus.value = !apiKeyObscureStatus.value;
-                  },
                 ),
               ),
-            ),
-            FormField(
-              builder: (FormFieldState<String> state) {
-                return InputDecorator(
-                  decoration: const InputDecoration(
-                    labelText: 'モデル',
+              const SizedBox(height: 16.0),
+              const SectionTitle(title: '使用するAI'),
+              const SizedBox(height: 8.0),
+              Card(
+                elevation: 4.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      // AIの種類(ChatGPT、Geminiなど)の選択
+                      LabeledDropdownField(
+                        label: 'AIの種類',
+                        selected: selectedType.value,
+                        options: aiType.values.toList(),
+                        onChanged: (String? newValue) {
+                          selectedType.value = newValue!;
+                        },
+                      ),
+                      // 選択されたAIのAPIキーの入力フォーム
+                      const SizedBox(height: 16.0),
+                      LabeledInputField(
+                        label: 'APIキー',
+                        placeholder: 'モデルのAPIキーを入力してください',
+                        controller: apiKeyController,
+                        obscureText: isApiKeyVisible.value,
+                        // APIキーの入力内容は表示/非表示を切り替え可能
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            // _obscureTextの値に応じてアイコンを切り替える
+                            isApiKeyVisible.value
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            // _obscureTextの値を反転
+                            isApiKeyVisible.value = !isApiKeyVisible.value;
+                          },
+                        ),
+                      ),
+                      // 選択されたAIのモデル(GPT3.5Turbo、GPT4Turboなど)の選択
+                      const SizedBox(height: 16.0),
+                      LabeledDropdownField(
+                        label: 'モデル',
+                        selected: selectedModel.value,
+                        options: modelConfig[settingScreenModelProvider
+                                .getKeyFromSelectedType()]!
+                            .toList(),
+                        onChanged: (String? newValue) {
+                          selectedModel.value = newValue!;
+                        },
+                      ),
+                    ],
                   ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: selectedModel.value,
-                      items: modelConfig[settingScreenModelProvider
-                              .getKeyFromSelectedType()]!
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        selectedModel.value = newValue!;
-                      },
-                    ),
-                  ),
-                );
-              },
-            ),
-            // 保存ボタン
-            const SizedBox(height: 20), // フォームとボタンの間にスペースを作成します
-            ElevatedButton(
-              onPressed: isCompareWithLocalDB.value
-                  // 活性
-                  ? () {
-                      _saveSettings(settingScreenModelProvider,
-                          isCompareWithLocalDB, context);
-                    }
-                  // 非活性
-                  : null,
-              child: Text(
-                isCompareWithLocalDB.value ? '変更内容を保存' : '設定に変更はありません',
+                ),
               ),
-            ),
-          ],
+              // 保存ボタン
+              const SizedBox(height: 16.0),
+              SizedBox(
+                // ボタンを親ウィジェットの横幅と合わせる
+                width: double.infinity,
+                child: CustomElevatedButton(
+                  text: isCompareWithLocalDB.value ? '変更内容を保存' : '設定に変更はありません',
+                  // 保存ボタンが押されたときに実行される関数
+                  // 保存内容に差分がない場合は非活性
+                  onPressedFunction: isCompareWithLocalDB.value
+                      ? () {
+                          _saveSettings(settingScreenModelProvider,
+                              isCompareWithLocalDB, context);
+                        }
+                      : null,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    );
-  }
-
-  DropdownMenuItem<AITypes> buildDropdownMenuItem(AITypes aiType) {
-    return DropdownMenuItem<AITypes>(
-      value: aiType,
-      child: Text(aiType.toString().split('.').last),
     );
   }
 
@@ -258,7 +261,7 @@ class SettingScreen extends HookConsumerWidget {
       ..aiTone = model.aiTone
       ..isSaved = true
       ..selectedType = model.selectedType
-      ..aiModelsPerType = model.copyApiKeyForType();
+      ..aiModelsPerType = model.copyAiModelsPerType();
 
     // ローカルDBに保存
     await settingModelBox.put(settingModelBoxKey, saveData);
@@ -277,8 +280,8 @@ class SettingScreen extends HookConsumerWidget {
         _showAlertDialog(context);
       }
     }).catchError((error) {
-      debugPrint(error);
-      _showAlertDialog(context);
+      debugPrint(error.toString());
+      debugPrint(error.stackTrace.toString());
     });
   }
 
@@ -292,20 +295,15 @@ class SettingScreen extends HookConsumerWidget {
     settingScreenModelProvider.aiTone = settingModel!.aiTone;
     settingScreenModelProvider.selectedType = settingModel.selectedType;
     settingScreenModelProvider.aiModelsPerType =
-        settingModel.copyApiKeyForType();
+        settingModel.copyAiModelsPerType();
   }
 
-  /// 保存に失敗した場合にアラートを表示
+  /// 保存に成功した場合にスナックバーを表示
   void _showSnackBar(context) {
-    SnackBar snackBar = SnackBar(
-      content: const Text('保存に成功しました'),
-      backgroundColor: Colors.green, // スナックバーの背景色を緑に設定
-      behavior: SnackBarBehavior.floating, // スナックバーを浮かせる
-      margin: const EdgeInsets.only(bottom: 10.0), // 下からのマージンを10に設定
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10)), // 角丸の半径を設定
-      duration: const Duration(milliseconds: 900), // 表示時間
-    );
+    // 共通のスナックバーを生成
+    SnackBar snackBar = InfoSnackBar(contentText: '保存に成功しました', context: context)
+        .buildSnackBar();
+    // スナックバーを表示
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 

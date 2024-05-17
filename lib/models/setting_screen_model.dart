@@ -31,10 +31,10 @@ class SettingScreenModel extends HiveObject {
 
   // コンストラクタ
   SettingScreenModel() : aiModelsPerType = {} {
-    aiModelsPerType = initApiKeyForType();
+    aiModelsPerType = initAiModelsPerType();
   }
 
-  Map<String, AIModel> initApiKeyForType() {
+  Map<String, AIModel> initAiModelsPerType() {
     Map<String, AIModel> initMap = {};
     for (var key in aiType.keys) {
       initMap[aiType[key]!] = AIModel(apiKey: '', model: modelConfig[key]![0]);
@@ -42,7 +42,7 @@ class SettingScreenModel extends HiveObject {
     return initMap;
   }
 
-  void setApiKeyForType(String type, AIModel aiModel) {
+  void setAiModelsPerType(String type, AIModel aiModel) {
     // インスタンスが共有されるため、そのまま代入ではなく個別に代入する
     AIModel a = aiModelsPerType[type]!;
     a.apiKey = aiModel.apiKey;
@@ -59,7 +59,7 @@ class SettingScreenModel extends HiveObject {
   }
 
   /// AIModelのコピーを返す(Mapの値が独自classのため、ディープコピーする必要がある)
-  Map<String, AIModel> copyApiKeyForType() {
+  Map<String, AIModel> copyAiModelsPerType() {
     return aiModelsPerType
         .map((key, value) => MapEntry(key, AIModel.from(value)));
   }
