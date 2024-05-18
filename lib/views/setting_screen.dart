@@ -5,7 +5,6 @@ import 'package:alexa_to_ai/providers/setting_screen_model_provider.dart';
 import 'package:alexa_to_ai/services/cloud_storage_service.dart';
 import 'package:alexa_to_ai/widgets/alert_dialog.dart';
 import 'package:alexa_to_ai/widgets/elevated_button.dart';
-import 'package:alexa_to_ai/widgets/info_snack_bar.dart';
 import 'package:alexa_to_ai/widgets/labeled_dropdown_field.dart';
 import 'package:alexa_to_ai/widgets/labeled_input_field.dart';
 import 'package:alexa_to_ai/widgets/section_title.dart';
@@ -275,7 +274,7 @@ class SettingScreen extends HookConsumerWidget {
     // 結果を画面に表示
     cloudStorageService.saveAISettingData(model).then((success) {
       if (success) {
-        _showSnackBar(context);
+        // _showSnackBar(context);
       } else {
         _showAlertDialog(context);
       }
@@ -298,14 +297,15 @@ class SettingScreen extends HookConsumerWidget {
         settingModel.copyAiModelsPerType();
   }
 
+  // NOTE: 実際に使った結果、スナックバーの表示は不要(失敗の時に通知できれば十分)だったのでコメントアウト(将来使う時に備えて残しておく)
   /// 保存に成功した場合にスナックバーを表示
-  void _showSnackBar(context) {
-    // 共通のスナックバーを生成
-    SnackBar snackBar = InfoSnackBar(contentText: '保存に成功しました', context: context)
-        .buildSnackBar();
-    // スナックバーを表示
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
+  // void _showSnackBar(context) {
+  //   // 共通のスナックバーを生成
+  //   SnackBar snackBar = InfoSnackBar(contentText: '保存に成功しました', context: context)
+  //       .buildSnackBar();
+  //   // スナックバーを表示
+  //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  // }
 
   /// 保存に失敗した場合にアラートを表示
   void _showAlertDialog(context) {
