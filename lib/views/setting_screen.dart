@@ -1,8 +1,8 @@
 import 'package:alexa_to_ai/database/database.dart';
 import 'package:alexa_to_ai/models/ai_model.dart';
 import 'package:alexa_to_ai/models/setting_screen_model.dart';
-import 'package:alexa_to_ai/providers/auth_service_provider.dart';
 import 'package:alexa_to_ai/providers/setting_screen_model_provider.dart';
+import 'package:alexa_to_ai/services/auth_service.dart';
 import 'package:alexa_to_ai/services/cloud_storage_service.dart';
 import 'package:alexa_to_ai/widgets/barrel/setting_screen_widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -84,7 +84,8 @@ class SettingScreen extends HookConsumerWidget {
     // 生体認証の認証結果の状態を保持(画面初期表示時は非認証状態)
     final isAuthenticating = useState(false);
     // シングルトンのAuthServiceを取得
-    final authService = ref.watch(authServiceProvider);
+    // final authService = ref.watch(authServiceProvider);
+    final authService = AuthService();
     // 生体認証を実行
     Future<void> authenticate() async {
       try {

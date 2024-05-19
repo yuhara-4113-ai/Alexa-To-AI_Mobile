@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'dart:math';
+
 import 'package:alexa_to_ai/database/database.dart';
+import 'package:alexa_to_ai/providers/ai_service_provider.dart';
 import 'package:alexa_to_ai/services/ai_service.dart';
 import 'package:alexa_to_ai/widgets/barrel/chat_ai_screen_widgets.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class ChatAIScreen extends StatefulWidget {
+class ChatAIScreen extends ConsumerStatefulWidget {
   // 画面名
   static String name = 'AIチャット画面';
 
@@ -16,9 +19,11 @@ class ChatAIScreen extends StatefulWidget {
   ChatAIScreenState createState() => ChatAIScreenState();
 }
 
-class ChatAIScreenState extends State<ChatAIScreen> {
+class ChatAIScreenState extends ConsumerState<ChatAIScreen> {
+  late final AIService aiService;
+
   // 設定画面で保存した内容をローカルDBから取得
-  final settingModel = settingModelBox.get(settingModelBoxKey);
+  final settingModel = settingModelBox.get(settingModelBoxKey)!;
 
   // メッセージを格納するリスト
   List<types.Message> messages = [];
@@ -30,8 +35,6 @@ class ChatAIScreenState extends State<ChatAIScreen> {
     id: 'user',
   );
 
-  late AIService aiService;
-
   @override
   Widget build(BuildContext context) {
     Brightness brightness = MediaQuery.of(context).platformBrightness;
@@ -39,7 +42,7 @@ class ChatAIScreenState extends State<ChatAIScreen> {
       appBar: AppBar(
         // アプリバーのタイトル以下のように使用中のAIを表示
         // AIチャット画面(ChatGPT)
-        title: Text('${ChatAIScreen.name}(${settingModel!.selectedType})'),
+        title: Text('${ChatAIScreen.name}(${settingModel.selectedType})'),
       ),
       // 画面の主要な部分
       body: Chat(
@@ -58,7 +61,7 @@ class ChatAIScreenState extends State<ChatAIScreen> {
   String createPrompt(String message) {
     // 口調のプロンプト設定
     String aiTonePrompt = '';
-    String aiTone = settingModel!.aiTone;
+    String aiTone = settingModel.aiTone;
     if (aiTone.isNotEmpty) {
       aiTonePrompt = '口調は$aiTone。';
     }
@@ -74,21 +77,23 @@ class ChatAIScreenState extends State<ChatAIScreen> {
   @override
   void initState() {
     super.initState();
-    aiService = AIService();
+
+    // シングルトンのサービスを取得
+    aiService = ref.read(aiServiceProvider);
 
     // チャットで表示するAIのユーザ情報を初期化
     _ai = types.User(
       id: 'ai',
       // 使用するAI
-      firstName: settingModel!.selectedType,
+      firstName: settingModel.selectedType,
       // AIのモデル
-      lastName: settingModel!.getAIModel().model,
+      lastName: settingModel.getAIModel().model,
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // ローカルDBに未保存のない場合(初期インストール後に設定画面で保存してない場合など)
       // アラートを表示し、保存を促す
-      if (!settingModel!.isSaved) {
+      if (!settingModel.isSaved) {
         _showAlertDialog();
       }
     });

@@ -8,6 +8,13 @@ import 'package:alexa_to_ai/services/ai_agent/gemini_agent.dart';
 import 'package:flutter/material.dart';
 
 class AIService {
+  // インスタンスをシングルトンにする
+  AIService._privateConstructor();
+  static final AIService _instance = AIService._privateConstructor();
+  factory AIService() {
+    return _instance;
+  }
+
   // AIのリクエストなどを管理するクラス(実行時に各AIの分岐で設定)
   late AIAgent _aiAgent;
 
