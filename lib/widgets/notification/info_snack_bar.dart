@@ -9,7 +9,7 @@ class InfoSnackBar {
     required this.context,
   });
 
-  SnackBar buildSnackBar() {
+  SnackBar build() {
     return SnackBar(
       content: Padding(
         padding: const EdgeInsets.symmetric(vertical: 2.0), // 上下の余白を設定
