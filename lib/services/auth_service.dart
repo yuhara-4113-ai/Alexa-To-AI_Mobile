@@ -2,6 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:local_auth/local_auth.dart';
 
 class AuthService {
+  // インスタンスをシングルトンにする
+  AuthService._privateConstructor();
+  static final AuthService _instance = AuthService._privateConstructor();
+  factory AuthService() {
+    return _instance;
+  }
+
   final LocalAuthentication auth = LocalAuthentication();
 
   Future<bool> authenticate() async {
