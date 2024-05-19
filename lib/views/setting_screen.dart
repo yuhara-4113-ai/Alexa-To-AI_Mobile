@@ -81,9 +81,10 @@ class SettingScreen extends HookConsumerWidget {
     // APIキーの表示/非表示を切り替えるための状態を保持(画面初期表示時は非表示)
     ValueNotifier<bool> isApiKeyVisible = useState<bool>(true);
 
+    // 生体認証の認証結果の状態を保持(画面初期表示時は非認証状態)
+    final isAuthenticating = useState(false);
     // 生体認証を実行
     final AuthService authService = AuthService();
-    final isAuthenticating = useState(false);
     Future<void> authenticate() async {
       try {
         bool authResult = await authService.authenticate();
@@ -93,6 +94,7 @@ class SettingScreen extends HookConsumerWidget {
           isApiKeyVisible.value = false;
         }
       } catch (e) {
+        // 何かしらエラーが発生したら、認証状態は非認証にする
         isAuthenticating.value = false;
       }
     }
