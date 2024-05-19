@@ -44,16 +44,8 @@ class ChatAIScreenState extends State<ChatAIScreen> {
       // 画面の主要な部分
       body: Chat(
         theme: brightness == Brightness.light
-            ? const DefaultChatTheme(
-                inputBackgroundColor: Colors.blueAccent, // メッセージ入力欄の背景色
-                primaryColor: Colors.blueAccent, // メッセージの背景色
-                userAvatarNameColors: [Colors.blueAccent], // ユーザー名の文字色
-              )
-            : DarkChatTheme(
-                inputBackgroundColor: Colors.black, // メッセージ入力欄の背景色
-                userAvatarNameColors: const [Colors.white70],
-                backgroundColor: Colors.grey[850]!,
-              ),
+            ? CustomDefaultChatTheme().build()
+            : CustomDarkChatTheme().build(),
         user: _user,
         messages: messages,
         onSendPressed: _onPressedSendButton,
