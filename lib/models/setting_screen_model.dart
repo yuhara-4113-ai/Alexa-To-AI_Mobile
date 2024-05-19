@@ -104,10 +104,6 @@ class SettingScreenModel extends HiveObject {
     return true;
   }
 
-  AITypes getAITypeFromSelectedType() {
-    return AITypes.values.firstWhere((entry) => entry.name == selectedType);
-  }
-
   // クラウド保存用のJSONを返す
   String convertJsonToCloudSave() {
     return jsonEncode({
