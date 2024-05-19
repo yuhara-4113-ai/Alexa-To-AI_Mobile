@@ -27,8 +27,8 @@ class App extends StatelessWidget {
       home: ProviderScope(
         child: MaterialApp(
           themeMode: ThemeMode.system,
-          darkTheme: DarkThemeData().buildThemeData(),
-          theme: LightThemeData().buildThemeData(),
+          darkTheme: DarkThemeData().build(),
+          theme: LightThemeData().build(),
           home: const Footer(),
         ),
       ),

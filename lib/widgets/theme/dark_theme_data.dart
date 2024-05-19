@@ -2,7 +2,7 @@ import 'package:alexa_to_ai/widgets/theme/custom_text_theme.dart';
 import 'package:flutter/material.dart';
 
 class DarkThemeData {
-  ThemeData buildThemeData() {
+  ThemeData build() {
     return ThemeData(
       fontFamily: 'NotoSansJP',
       brightness: Brightness.dark,
@@ -17,7 +17,7 @@ class DarkThemeData {
         onPrimary: Colors.white,
         onSecondary: Colors.black,
       ).copyWith(background: Colors.grey[850]),
-      textTheme: CustomTextTheme().buildTextTheme(),
+      textTheme: CustomTextTheme().build(),
     );
   }
 }
