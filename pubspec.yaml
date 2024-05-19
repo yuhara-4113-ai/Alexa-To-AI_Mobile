@@ -37,6 +37,8 @@ dependencies:
   google_generative_ai: ^0.3.2
   # anthropic(Claude)のAPIリクエストに使用
   anthropic_dart: ^1.0.1
+  # 生体認証に使用
+  local_auth: ^2.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

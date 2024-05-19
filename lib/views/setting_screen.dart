@@ -2,6 +2,7 @@ import 'package:alexa_to_ai/database/database.dart';
 import 'package:alexa_to_ai/models/ai_model.dart';
 import 'package:alexa_to_ai/models/setting_screen_model.dart';
 import 'package:alexa_to_ai/providers/setting_screen_model_provider.dart';
+import 'package:alexa_to_ai/services/auth_service.dart';
 import 'package:alexa_to_ai/services/cloud_storage_service.dart';
 import 'package:alexa_to_ai/widgets/barrel/setting_screen_widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -80,6 +81,22 @@ class SettingScreen extends HookConsumerWidget {
     // APIキーの表示/非表示を切り替えるための状態を保持(画面初期表示時は非表示)
     ValueNotifier<bool> isApiKeyVisible = useState<bool>(true);
 
+    // 生体認証を実行
+    final AuthService authService = AuthService();
+    final isAuthenticating = useState(false);
+    Future<void> authenticate() async {
+      try {
+        bool authResult = await authService.authenticate();
+        // 生体認証が成功した場合は、認証状態の更新とAPIキーを表示に切り替える
+        if (authResult) {
+          isAuthenticating.value = true;
+          isApiKeyVisible.value = false;
+        }
+      } catch (e) {
+        isAuthenticating.value = false;
+      }
+    }
+
     // Scaffoldを使用して基本的なレイアウトを作成
     return Scaffold(
       appBar: AppBar(
@@ -122,6 +139,19 @@ class SettingScreen extends HookConsumerWidget {
                         selectedType.value = newValue!;
                       },
                     ),
+                    // 選択されたAIのモデル(GPT3.5Turbo、GPT4Turboなど)の選択
+                    const SizedBox(height: 16.0),
+                    LabeledDropdownField(
+                      label: 'モデル',
+                      selected: selectedModel.value,
+                      options: AITypes.getAIType(
+                              settingScreenModelProvider.selectedType)
+                          .models
+                          .toList(),
+                      onChanged: (String? newValue) {
+                        selectedModel.value = newValue!;
+                      },
+                    ),
                     // 選択されたAIのAPIキーの入力フォーム
                     const SizedBox(height: 16.0),
                     LabeledInputField(
@@ -138,23 +168,15 @@ class SettingScreen extends HookConsumerWidget {
                               : Icons.visibility_off,
                         ),
                         onPressed: () {
-                          // _obscureTextの値を反転
-                          isApiKeyVisible.value = !isApiKeyVisible.value;
+                          if (isAuthenticating.value) {
+                            // 生体認証が実施済みの場合は、APIキーの表示/非表示を切り替える
+                            isApiKeyVisible.value = !isApiKeyVisible.value;
+                          } else {
+                            // 生体認証が未実施の場合は、生体認証を実施
+                            authenticate();
+                          }
                         },
                       ),
-                    ),
-                    // 選択されたAIのモデル(GPT3.5Turbo、GPT4Turboなど)の選択
-                    const SizedBox(height: 16.0),
-                    LabeledDropdownField(
-                      label: 'モデル',
-                      selected: selectedModel.value,
-                      options: AITypes.getAIType(
-                              settingScreenModelProvider.selectedType)
-                          .models
-                          .toList(),
-                      onChanged: (String? newValue) {
-                        selectedModel.value = newValue!;
-                      },
                     ),
                   ],
                 ),
