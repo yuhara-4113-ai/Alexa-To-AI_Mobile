@@ -24,6 +24,23 @@ class App extends StatelessWidget {
       // 各画面の入力状態の保持に使用するProviderScope
       home: ProviderScope(
         child: MaterialApp(
+          themeMode: ThemeMode.system,
+          // テーマの設定(ダークモード)
+          darkTheme: ThemeData(
+            fontFamily: 'NotoSansJP',
+            brightness: Brightness.dark,
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.black),
+              ),
+            ),
+            colorScheme: const ColorScheme.dark(
+              primary: Colors.black,
+              secondary: Colors.white,
+              onPrimary: Colors.white,
+              onSecondary: Colors.black,
+            ).copyWith(background: Colors.grey[850]),
+          ),
           theme: ThemeData(
             // こことpubspec.yamlのfonts.familyの値を合わせないと指定したフォントが適用されない
             fontFamily: 'NotoSansJP',

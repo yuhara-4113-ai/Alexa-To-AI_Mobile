@@ -61,6 +61,7 @@ class ChatAIScreenState extends State<ChatAIScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness brightness = MediaQuery.of(context).platformBrightness;
     return Scaffold(
       appBar: AppBar(
         // アプリバーのタイトル以下のように使用中のAIを表示
@@ -69,11 +70,17 @@ class ChatAIScreenState extends State<ChatAIScreen> {
       ),
       // 画面の主要な部分
       body: Chat(
-        theme: const DefaultChatTheme(
-          primaryColor: Colors.blueAccent, // メッセージの背景色の変更
-          userAvatarNameColors: [Colors.blueAccent], // ユーザー名の文字色の変更
-          //backgroundColor: Colors.black12, // チャット画面の背景色の変更
-        ),
+        theme: brightness == Brightness.light
+            ? const DefaultChatTheme(
+                inputBackgroundColor: Colors.blueAccent, // メッセージ入力欄の背景色
+                primaryColor: Colors.blueAccent, // メッセージの背景色
+                userAvatarNameColors: [Colors.blueAccent], // ユーザー名の文字色
+              )
+            : DarkChatTheme(
+                inputBackgroundColor: Colors.black, // メッセージ入力欄の背景色
+                userAvatarNameColors: const [Colors.white70],
+                backgroundColor: Colors.grey[850]!,
+              ),
         user: _user,
         messages: messages,
         onSendPressed: _onPressedSendButton,
