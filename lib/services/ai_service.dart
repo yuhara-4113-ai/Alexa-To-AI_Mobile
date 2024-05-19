@@ -21,7 +21,7 @@ class AIService {
     AIModel aiModel = settingModel!.getAIModel();
 
     // 選択したAIの種別によって、処理を分ける
-    switch (settingModel.getKeyFromSelectedType()) {
+    switch (AITypes.getAIType(settingModel.selectedType)) {
       case AITypes.chatGPT:
         debugPrint('call ChatGPTAgent');
         _aiAgent = ChatGPTAgent();

@@ -16,7 +16,7 @@ class AIModel extends HiveObject {
   // 引数がなければChatGPTのデフォルト値を設定
   AIModel({String? apiKey, String? model})
       : apiKey = apiKey ?? '',
-        model = model ?? modelConfig[aiType[AITypes.chatGPT]!]![0];
+        model = model ?? AITypes.chatGPT.models[0];
 
   // AIModel.fromメソッド
   // 既存のAIModelインスタンスを引数に取り、そのプロパティをコピーして新しいAIModelインスタンスを作成
@@ -34,29 +34,24 @@ class AIModel extends HiveObject {
 }
 
 enum AITypes {
-  chatGPT,
-  gemini,
-  claude,
-}
-
-// AITypeをベタ書きするのはここだけ
-final Map<AITypes, String> aiType = {
-  AITypes.chatGPT: 'ChatGPT',
-  AITypes.gemini: 'Gemini',
-  AITypes.claude: 'Claude',
-};
-
-// モデルをベタ書きするのはここだけ
-final Map<AITypes, List<String>> modelConfig = {
-  AITypes.chatGPT: ['gpt-3.5-turbo', 'gpt-4-turbo', 'gpt-4o'],
-  AITypes.gemini: [
+  chatGPT(name: 'ChatGPT', models: ['gpt-3.5-turbo', 'gpt-4-turbo', 'gpt-4o']),
+  gemini(name: 'Gemini', models: [
     'gemini-1.0-pro-latest',
     'gemini-1.5-flash-latest',
-    'gemini-1.5-pro-latest',
-  ],
-  AITypes.claude: [
+    'gemini-1.5-pro-latest'
+  ]),
+  claude(name: 'Claude', models: [
     'claude-3-haiku-20240307',
     'claude-3-sonnet-20240229',
     'claude-3-opus-20240229'
-  ],
-};
+  ]);
+
+  final String name;
+  final List<String> models;
+
+  const AITypes({required this.name, required this.models});
+
+  static AITypes getAIType(String name) {
+    return AITypes.values.firstWhere((entry) => entry.name == name);
+  }
+}

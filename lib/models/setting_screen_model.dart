@@ -23,7 +23,7 @@ class SettingScreenModel extends HiveObject {
 
   // 選択した種別(ChatGPT、Geminiなど)
   @HiveField(2)
-  String selectedType = aiType[AITypes.chatGPT]!;
+  String selectedType = AITypes.chatGPT.name;
 
   // 種別ごとのAIModel
   @HiveField(3)
@@ -34,10 +34,11 @@ class SettingScreenModel extends HiveObject {
     aiModelsPerType = initAiModelsPerType();
   }
 
+  // enumからデフォルト値のMapを作成
   Map<String, AIModel> initAiModelsPerType() {
     Map<String, AIModel> initMap = {};
-    for (var key in aiType.keys) {
-      initMap[aiType[key]!] = AIModel(apiKey: '', model: modelConfig[key]![0]);
+    for (var val in AITypes.values) {
+      initMap[val.name] = AIModel(apiKey: '', model: val.models[0]);
     }
     return initMap;
   }
@@ -103,10 +104,8 @@ class SettingScreenModel extends HiveObject {
     return true;
   }
 
-  AITypes getKeyFromSelectedType() {
-    return aiType.entries
-        .firstWhere((entry) => entry.value == selectedType)
-        .key;
+  AITypes getAITypeFromSelectedType() {
+    return AITypes.values.firstWhere((entry) => entry.name == selectedType);
   }
 
   // クラウド保存用のJSONを返す

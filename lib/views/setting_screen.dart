@@ -135,7 +135,7 @@ class SettingScreen extends HookConsumerWidget {
                       LabeledDropdownField(
                         label: 'AIの種類',
                         selected: selectedType.value,
-                        options: aiType.values.toList(),
+                        options: AITypes.values.map((e) => e.name).toList(),
                         onChanged: (String? newValue) {
                           selectedType.value = newValue!;
                         },
@@ -166,8 +166,9 @@ class SettingScreen extends HookConsumerWidget {
                       LabeledDropdownField(
                         label: 'モデル',
                         selected: selectedModel.value,
-                        options: modelConfig[settingScreenModelProvider
-                                .getKeyFromSelectedType()]!
+                        options: AITypes.getAIType(
+                                settingScreenModelProvider.selectedType)
+                            .models
                             .toList(),
                         onChanged: (String? newValue) {
                           selectedModel.value = newValue!;
