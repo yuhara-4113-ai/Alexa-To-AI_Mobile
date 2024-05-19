@@ -1,5 +1,7 @@
 import 'package:alexa_to_ai/database/database.dart';
-import 'package:alexa_to_ai/widgets/footer.dart';
+import 'package:alexa_to_ai/widgets/navigation/footer.dart';
+import 'package:alexa_to_ai/widgets/theme/dark_theme_data.dart';
+import 'package:alexa_to_ai/widgets/theme/light_theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,34 +27,8 @@ class App extends StatelessWidget {
       home: ProviderScope(
         child: MaterialApp(
           themeMode: ThemeMode.system,
-          // テーマの設定(ダークモード)
-          darkTheme: ThemeData(
-            fontFamily: 'NotoSansJP',
-            brightness: Brightness.dark,
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.black),
-              ),
-            ),
-            colorScheme: const ColorScheme.dark(
-              primary: Colors.black,
-              secondary: Colors.white,
-              onPrimary: Colors.white,
-              onSecondary: Colors.black,
-            ).copyWith(background: Colors.grey[850]),
-          ),
-          theme: ThemeData(
-            // こことpubspec.yamlのfonts.familyの値を合わせないと指定したフォントが適用されない
-            fontFamily: 'NotoSansJP',
-            // 画面で共通のテーマ設定
-            primarySwatch: Colors.deepPurple,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-            textTheme: const TextTheme(
-              titleLarge:
-                  TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-              bodyMedium: TextStyle(fontSize: 16.0),
-            ),
-          ),
+          darkTheme: DarkThemeData().buildThemeData(),
+          theme: LightThemeData().buildThemeData(),
           home: const Footer(),
         ),
       ),

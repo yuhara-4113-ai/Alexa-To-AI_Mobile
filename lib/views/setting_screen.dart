@@ -1,13 +1,14 @@
-import 'package:alexa_to_ai/models/ai_model.dart';
 import 'package:alexa_to_ai/database/database.dart';
+import 'package:alexa_to_ai/models/ai_model.dart';
 import 'package:alexa_to_ai/models/setting_screen_model.dart';
 import 'package:alexa_to_ai/providers/setting_screen_model_provider.dart';
 import 'package:alexa_to_ai/services/cloud_storage_service.dart';
-import 'package:alexa_to_ai/widgets/alert_dialog.dart';
-import 'package:alexa_to_ai/widgets/elevated_button.dart';
-import 'package:alexa_to_ai/widgets/labeled_dropdown_field.dart';
-import 'package:alexa_to_ai/widgets/labeled_input_field.dart';
-import 'package:alexa_to_ai/widgets/section_title.dart';
+import 'package:alexa_to_ai/widgets/button/elevated_button.dart';
+import 'package:alexa_to_ai/widgets/common/custom_card.dart';
+import 'package:alexa_to_ai/widgets/common/section_title.dart';
+import 'package:alexa_to_ai/widgets/input/labeled_dropdown_field.dart';
+import 'package:alexa_to_ai/widgets/input/labeled_input_field.dart';
+import 'package:alexa_to_ai/widgets/notification/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -15,13 +16,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 final cloudStorageService = CloudStorageService();
 
 class SettingScreen extends HookConsumerWidget {
-  // コンストラクタ 状態を保持しているModelを受け取る
-  final SettingScreenModel settingScreenModel;
-  const SettingScreen({Key? key, required this.settingScreenModel})
-      : super(key: key);
-
   // 画面名
   static String name = '設定画面';
+  // コンストラクタ 状態を保持しているModelを受け取る
+  final SettingScreenModel settingScreenModel;
+
+  const SettingScreen({Key? key, required this.settingScreenModel})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -99,83 +100,69 @@ class SettingScreen extends HookConsumerWidget {
             children: [
               const SectionTitle(title: 'AIのレスポンス'),
               const SizedBox(height: 8.0),
-              Card(
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      // 口調/キャラクター名の入力フォーム
-                      // TODO TextFieldの入力中に画面描画が行われると、フォーカスが失われるため、キーボードの予測変換が閉じてしまう
-                      LabeledInputField(
-                        label: '口調/キャラクター名',
-                        controller: aiToneController,
-                        placeholder: 'ツンデレ、スポンジボブなど',
-                      ),
-                    ],
-                  ),
+              CustomCard(
+                column: Column(
+                  children: [
+                    // 口調/キャラクター名の入力フォーム
+                    // TODO TextFieldの入力中に画面描画が行われると、フォーカスが失われるため、キーボードの予測変換が閉じてしまう
+                    LabeledInputField(
+                      label: '口調/キャラクター名',
+                      controller: aiToneController,
+                      placeholder: 'ツンデレ、スポンジボブなど',
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 16.0),
               const SectionTitle(title: '使用するAI'),
               const SizedBox(height: 8.0),
-              Card(
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      // AIの種類(ChatGPT、Geminiなど)の選択
-                      LabeledDropdownField(
-                        label: 'AIの種類',
-                        selected: selectedType.value,
-                        options: AITypes.values.map((e) => e.name).toList(),
-                        onChanged: (String? newValue) {
-                          selectedType.value = newValue!;
-                        },
-                      ),
-                      // 選択されたAIのAPIキーの入力フォーム
-                      const SizedBox(height: 16.0),
-                      LabeledInputField(
-                        label: 'APIキー',
-                        placeholder: 'モデルのAPIキーを入力してください',
-                        controller: apiKeyController,
-                        obscureText: isApiKeyVisible.value,
-                        // APIキーの入力内容は表示/非表示を切り替え可能
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            // _obscureTextの値に応じてアイコンを切り替える
-                            isApiKeyVisible.value
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                          ),
-                          onPressed: () {
-                            // _obscureTextの値を反転
-                            isApiKeyVisible.value = !isApiKeyVisible.value;
-                          },
+              CustomCard(
+                column: Column(
+                  children: [
+                    // AIの種類(ChatGPT、Geminiなど)の選択
+                    LabeledDropdownField(
+                      label: 'AIの種類',
+                      selected: selectedType.value,
+                      options: AITypes.values.map((e) => e.name).toList(),
+                      onChanged: (String? newValue) {
+                        selectedType.value = newValue!;
+                      },
+                    ),
+                    // 選択されたAIのAPIキーの入力フォーム
+                    const SizedBox(height: 16.0),
+                    LabeledInputField(
+                      label: 'APIキー',
+                      placeholder: 'モデルのAPIキーを入力してください',
+                      controller: apiKeyController,
+                      obscureText: isApiKeyVisible.value,
+                      // APIキーの入力内容は表示/非表示を切り替え可能
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          // _obscureTextの値に応じてアイコンを切り替える
+                          isApiKeyVisible.value
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                         ),
-                      ),
-                      // 選択されたAIのモデル(GPT3.5Turbo、GPT4Turboなど)の選択
-                      const SizedBox(height: 16.0),
-                      LabeledDropdownField(
-                        label: 'モデル',
-                        selected: selectedModel.value,
-                        options: AITypes.getAIType(
-                                settingScreenModelProvider.selectedType)
-                            .models
-                            .toList(),
-                        onChanged: (String? newValue) {
-                          selectedModel.value = newValue!;
+                        onPressed: () {
+                          // _obscureTextの値を反転
+                          isApiKeyVisible.value = !isApiKeyVisible.value;
                         },
                       ),
-                    ],
-                  ),
+                    ),
+                    // 選択されたAIのモデル(GPT3.5Turbo、GPT4Turboなど)の選択
+                    const SizedBox(height: 16.0),
+                    LabeledDropdownField(
+                      label: 'モデル',
+                      selected: selectedModel.value,
+                      options: AITypes.getAIType(
+                              settingScreenModelProvider.selectedType)
+                          .models
+                          .toList(),
+                      onChanged: (String? newValue) {
+                        selectedModel.value = newValue!;
+                      },
+                    ),
+                  ],
                 ),
               ),
               // 保存ボタン
