@@ -5,7 +5,7 @@ class CustomDefaultChatTheme {
   DefaultChatTheme build() {
     return const DefaultChatTheme(
       inputBackgroundColor: Colors.blueAccent, // メッセージ入力欄の背景色
-      primaryColor: Color.fromARGB(255, 242, 242, 242), // メッセージの背景色
+      primaryColor: Colors.blueAccent, // メッセージの背景色
       userAvatarNameColors: [Colors.blueAccent], // ユーザー名の文字色
     );
   }

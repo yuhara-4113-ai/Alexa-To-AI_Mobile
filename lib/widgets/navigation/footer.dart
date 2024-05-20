@@ -37,17 +37,35 @@ class FooterState extends State<Footer> {
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
         currentIndex: _currentIndex,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
+            icon: _buildIcon(Icons.settings, 0),
             label: 'Settings',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
+            icon: _buildIcon(Icons.chat, 1),
             label: 'Chat',
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildIcon(IconData iconData, int index) {
+    bool isSelected = _currentIndex == index;
+    Color selectedColor = Colors.lightBlue.shade100;
+    return Container(
+      width: 100.0, // 枠線の横幅
+      padding: const EdgeInsets.all(2.0), // アイコンと枠線の余白
+      decoration: BoxDecoration(
+        color: isSelected ? selectedColor : Colors.transparent, // 枠線内の背景色
+        border: Border.all(
+          color: _currentIndex == index ? selectedColor : Colors.transparent,
+          width: 2.0, // 枠線の太さ
+        ),
+        borderRadius: BorderRadius.circular(24.0),
+      ),
+      child: Icon(iconData),
     );
   }
 }
