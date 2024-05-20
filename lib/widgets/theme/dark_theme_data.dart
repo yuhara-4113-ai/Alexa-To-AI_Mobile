@@ -27,8 +27,7 @@ class DarkThemeData {
         // セカンダリカラーの上に表示されるテキストやアイコンの色
         onSecondary: Colors.white,
       )
-          // 作成したカラースキームを元に新しいカラースキームを作成。
-          // copyWithメソッドを使用することで、既存のカラースキームを部分的に変更する
+          // copyWithメソッドで、上記のカラースキームの一部(背景色)を上書き
           .copyWith(background: Colors.grey[850]),
       textTheme: CustomTextTheme().build(),
     );
