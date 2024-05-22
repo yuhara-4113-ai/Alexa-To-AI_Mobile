@@ -20,11 +20,13 @@ class LightThemeData {
         // セカンダリカラーの上に表示されるテキストやアイコンの色
         onSecondary: Colors.blueAccent,
       ),
-      // 作成したカラースキームを元に新しいカラースキームを作成。
-      // copyWithメソッドを使用することで、既存のカラースキームを部分的に変更する
-      // .copyWith(background: Colors.white),
       visualDensity: VisualDensity.adaptivePlatformDensity,
       textTheme: CustomTextTheme().build(),
+      cardTheme: const CardTheme(
+        // MaterialColorじゃないとエラーが出るので一旦指定
+        color: Colors.grey,
+      ) // copyWithメソッドで、色を微調整
+          .copyWith(color: Colors.blueGrey.shade50),
     );
   }
 }

@@ -27,9 +27,12 @@ class DarkThemeData {
         // セカンダリカラーの上に表示されるテキストやアイコンの色
         onSecondary: Colors.white,
       )
-          // copyWithメソッドで、上記のカラースキームの一部(背景色)を上書き
+          // copyWithメソッドで、色を微調整
           .copyWith(background: Colors.grey[850]),
       textTheme: CustomTextTheme().build(),
+      cardTheme: const CardTheme(
+        color: Colors.black,
+      ),
     );
   }
 }
