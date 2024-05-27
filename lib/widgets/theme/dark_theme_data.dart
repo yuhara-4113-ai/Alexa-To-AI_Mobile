@@ -7,9 +7,10 @@ class DarkThemeData {
       // こことpubspec.yamlのfonts.familyの値を合わせないと指定したフォントが適用されない
       fontFamily: 'NotoSansJP',
       brightness: Brightness.dark,
+      scaffoldBackgroundColor: Colors.grey.shade800,
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Colors.black),
+          backgroundColor: WidgetStateProperty.all(Colors.black),
         ),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
@@ -26,9 +27,7 @@ class DarkThemeData {
         onPrimary: Colors.lightBlueAccent,
         // セカンダリカラーの上に表示されるテキストやアイコンの色
         onSecondary: Colors.white,
-      )
-          // copyWithメソッドで、色を微調整
-          .copyWith(background: Colors.grey[850]),
+      ),
       textTheme: CustomTextTheme().build(),
       cardTheme: const CardTheme(
         color: Colors.black,

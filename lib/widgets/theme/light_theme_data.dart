@@ -26,7 +26,7 @@ class LightThemeData {
         // MaterialColorじゃないとエラーが出るので一旦指定
         color: Colors.grey,
       ) // copyWithメソッドで、色を微調整
-          .copyWith(color: Colors.blueGrey.shade50),
+          .copyWith(color: Colors.blue.shade50),
     );
   }
 }

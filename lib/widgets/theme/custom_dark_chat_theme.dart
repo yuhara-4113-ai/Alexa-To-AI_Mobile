@@ -11,7 +11,7 @@ class CustomDarkChatTheme {
         borderRadius: BorderRadius.circular(20),
       ),
       userAvatarNameColors: const [Colors.white70],
-      backgroundColor: Colors.grey[850]!,
+      backgroundColor: Colors.grey.shade800,
     );
   }
 }
