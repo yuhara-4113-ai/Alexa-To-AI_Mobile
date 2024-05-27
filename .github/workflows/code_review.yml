@@ -17,9 +17,6 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'ChatGPT-Review')
     runs-on: ubuntu-latest
     steps:
-      # ここはGitHub Actionsで使用するリポジトリを指定(レビュー対象の自分のリポジトリではない)
-      - uses: anc95/ChatGPT-CodeReview@main
-
       # ラベル名から使用するモデルを使い分ける(以下で使用可能なモデルを確認可能)
       # デフォルトはgpt-3.5-turbo
       # https://platform.openai.com/docs/models
@@ -29,6 +26,8 @@ jobs:
         if: contains(join(github.event.pull_request.labels.*.name, ','), 'gpt-4o')
         run: echo "MODEL=gpt-4o" >> $GITHUB_ENV
 
+      # ここはGitHub Actionsで使用するリポジトリを指定(レビュー対象の自分のリポジトリではない)
+      - uses: anc95/ChatGPT-CodeReview@main
         env:
           # ChatGPT-CodeReviewで必要な環境変数
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -40,8 +39,6 @@ jobs:
           OPENAI_API_ENDPOINT: https://api.openai.com/v1
           # 使用するモデル
           MODEL: $MODEL
-          # gpt-4o使いたいけど、gpt-3.5-turboの10倍のコストがかかるので、gpt-3.5-turboを使う
-          # MODEL: gpt-4o
           PROMPT: |
             あなたはベテランのFlutterエンジニアです。回答は日本語でお願いします。
             渡されたコードについて改善点を見つけ、変更する理由を説明した上で、変更後のコード例を示してください。
