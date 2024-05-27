@@ -5,6 +5,11 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Flutter",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
             "type": "chrome",
             "request": "launch",
             "name": "localhost に対して Chrome を起動する",
