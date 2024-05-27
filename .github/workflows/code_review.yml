@@ -7,24 +7,53 @@ permissions:
 on:
   pull_request:
     types: [opened, reopened, synchronize]
-
+    paths:
+      - "**.dart"
+      - "**.yml"
+      - "**.yaml"
 jobs:
-  test:
-    # if: ${{ contains(github.event.*.labels.*.name, 'gpt review') }} # Optional; to run only when a label is attached
+  gpt-review:
+    if: contains(github.event.pull_request.labels.*.name, 'gptReview')
     runs-on: ubuntu-latest
     steps:
+      # ここはGitHub Actionsで使用するリポジトリを指定(レビュー対象の自分のリポジトリではない)
       - uses: anc95/ChatGPT-CodeReview@main
         env:
+          # ChatGPT-CodeReviewで必要な環境変数
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           # 以下はOptional項目
           # 言語設定
           LANGUAGE: Japanese
+          # OpenAIのAPIエンドポイント
           OPENAI_API_ENDPOINT: https://api.openai.com/v1
-          # MODEL: gpt-4o # https://platform.openai.com/docs/models
-          MODEL: gpt-3.5-turbo # https://platform.openai.com/docs/models
-          # PROMPT: # example: Please check if there are any confusions or irregularities in the following code diff:
+          # 使用するモデル https://platform.openai.com/docs/models
+          MODEL: gpt-3.5-turbo
+          # gpt-4o使いたいけど、gpt-3.5-turboの10倍のコストがかかるので、gpt-3.5-turboを使う
+          # MODEL: gpt-4o
+          PROMPT: |
+            あなたはベテランのFlutterエンジニアです。回答は日本語でお願いします。
+            渡されたコードについて改善点を見つけ、変更する理由を説明した上で、変更後のコード例を示してください。
+            改善点がない場合には絶対にコメントをしないでください。
+            対象とするファイルは `**.dart` と `**.yml` と`**.yaml` ファイルです。
+            それ以外のファイルには絶対にコメントしないでください。
+
+            誰にとっても読みやすいコードになるよう、改善点を見つけたら積極的にレビューしてください。
+            あなたに渡されるコードは一部分であるため、未定義のメソッドやクラスなどの指摘については消極的にしてください。
+
+            特に以下の点を指摘してください:
+              - 誤解を招いたり、実態を正確に表していない命名があるか
+              - 適度に変数を定義し自己ドキュメントされているか
+              - 冗長な書き方のコードがないか
+              - 適切にWidgetを分離しているか
+              - N+1問題（N+1 query problem）を引き起こす箇所
+              - 読んで理解が難しい箇所にコメントが適切にされているか
+              - コメントの内容は日本語として読んでわかりやすく、簡潔に説明できているか
+              - 理解の難しい複雑な条件式が作られていないか
+              - 明らかなセキュリティの問題があるか
+          #   - 新しいメソッドを定義したときにテストコードを書いているか
+          #   - テスト内の説明文は、テストの内容をわかりやすく適切に表しているか
           top_p: 1 # https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p
           temperature: 1 # https://platform.openai.com/docs/api-reference/chat/create#chat/create-temperature
-          max_tokens: 4000
-          MAX_PATCH_LENGTH: 4000 # If the Patch/Diff length is greater than MAX_PATCH_LENGTH, it's ignored and not checked. By default, if MAX_PATCH_LENGTH is not set, there is no limit to the patch/diff length...
+          max_tokens: 4096
+          MAX_PATCH_LENGTH: 4096
