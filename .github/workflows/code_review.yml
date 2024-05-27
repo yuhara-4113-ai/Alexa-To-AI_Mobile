@@ -38,7 +38,7 @@ jobs:
           # OpenAIのAPIエンドポイント
           OPENAI_API_ENDPOINT: https://api.openai.com/v1
           # 使用するモデル
-          MODEL: $MODEL
+          MODEL: ${{ env.MODEL }}
           PROMPT: |
             あなたはベテランのFlutterエンジニアです。回答は日本語でお願いします。
             渡されたコードについて改善点を見つけ、変更する理由を説明した上で、変更後のコード例を示してください。
