@@ -148,7 +148,7 @@ class SettingScreen extends HookConsumerWidget {
                     LabeledDropdownField(
                       label: 'モデル',
                       selected: selectedModel.value,
-                      options: AITypes.getAIType(
+                      options: AITypes.getAITypeByName(
                               settingScreenModelProvider.selectedType)
                           .models
                           .toList(),

@@ -4,27 +4,26 @@ part 'ai_model.g.dart';
 
 @HiveType(typeId: 1)
 class AIModel extends HiveObject {
-  // APIキー
+  /// APIキー
   @HiveField(0)
   String apiKey;
 
-  // AIのモデル(ChatGPT-Turbo、ChatGPT-4など)
+  /// AIのモデル (ChatGPT-Turbo、ChatGPT-4など)
   @HiveField(1)
   String model;
 
-  // AIModelのコンストラクタ
-  // 引数がなければChatGPTのデフォルト値を設定
+  /// AIModelのコンストラクタ
+  /// 引数がなければ、デフォルト値を設定 (ChatGPT)
   AIModel({String? apiKey, String? model})
       : apiKey = apiKey ?? '',
         model = model ?? AITypes.chatGPT.models[0];
 
-  // AIModel.fromメソッド
-  // 既存のAIModelインスタンスを引数に取り、そのプロパティをコピーして新しいAIModelインスタンスを作成
-  AIModel.from(AIModel ai)
-      : apiKey = ai.apiKey,
-        model = ai.model;
+  /// `AIModel`インスタンスをコピーし、新しいインスタンスを作成するファクトリコンストラクタ
+  factory AIModel.from(AIModel ai) {
+    return AIModel(apiKey: ai.apiKey, model: ai.model);
+  }
 
-  // SettingScreenModelのtoJson2()使う用(二重エンコードになるのでここではエンコードしない)
+  /// JSON形式のマップに変換 (二重エンコード防止のためエンコードは行わない)
   Map<String, String> toJson() {
     return {
       'apiKey': apiKey,
@@ -51,7 +50,9 @@ enum AITypes {
 
   const AITypes({required this.name, required this.models});
 
-  static AITypes getAIType(String name) {
-    return AITypes.values.firstWhere((entry) => entry.name == name);
+  /// 名前から対応するAIタイプを取得
+  static AITypes getAITypeByName(String name) {
+    return AITypes.values.firstWhere((entry) => entry.name == name,
+        orElse: () => throw ArgumentError('Invalid AI type'));
   }
 }
