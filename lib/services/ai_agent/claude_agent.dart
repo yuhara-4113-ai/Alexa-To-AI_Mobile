@@ -6,21 +6,32 @@ import 'package:flutter/foundation.dart';
 class ClaudeAgent implements AIAgent {
   @override
   Future<String> sendMessage(String prompt, AIModel aiModel) async {
-    final service = AnthropicService(aiModel.apiKey, model: aiModel.model);
+    final AnthropicService service =
+        AnthropicService(aiModel.apiKey, model: aiModel.model);
 
-    Request request = Request();
-    // request.model = aiModel.model;
-    request.maxTokens = 500;
-    request.messages = [
-      Message(
-        role: "user",
-        content: prompt,
-      )
-    ];
-    Response response = await service.sendRequest(request: request);
-    String responseText = response.toJson()["content"][0]["text"];
-    debugPrint('Response body: $responseText');
+    // AIリクエストの作成
+    final Request aiRequest = _createAIRequest(prompt);
 
-    return responseText;
+    try {
+      final Response response = await service.sendRequest(request: aiRequest);
+      final String responseText = response.toJson()["content"][0]["text"];
+      debugPrint('Response body: $responseText');
+
+      return responseText;
+    } catch (e) {
+      debugPrint('Error while sending request: $e');
+      throw Exception("AIリクエストの送信中にエラーが発生しました");
+    }
+  }
+
+  Request _createAIRequest(String prompt) {
+    return Request()
+      ..maxTokens = 500
+      ..messages = [
+        Message(
+          role: "user",
+          content: prompt,
+        )
+      ];
   }
 }
