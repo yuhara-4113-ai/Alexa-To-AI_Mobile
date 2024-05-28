@@ -22,7 +22,7 @@ class LabeledInputField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: Theme.of(context).textTheme.bodyMedium),
-        const SizedBox(height: 6.0),
+        const SizedBox(height: 8.0),
         TextField(
           controller: controller,
           obscureText: obscureText,
