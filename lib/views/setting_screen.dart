@@ -194,7 +194,7 @@ class SettingScreen extends HookConsumerWidget {
                   text: isCompareWithLocalDB.value ? '変更内容を保存' : '設定に変更はありません',
                   // 保存ボタンが押されたときに実行される関数
                   // 保存内容に差分がない場合は非活性
-                  onPressedFunction: isCompareWithLocalDB.value
+                  onPressed: isCompareWithLocalDB.value
                       ? () {
                           _saveSettings(settingScreenModelProvider,
                               isCompareWithLocalDB, context);

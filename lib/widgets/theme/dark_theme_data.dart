@@ -10,23 +10,34 @@ class DarkThemeData {
       scaffoldBackgroundColor: Colors.grey.shade800,
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
-          backgroundColor: WidgetStateProperty.all(Colors.black),
+          backgroundColor:
+              WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+            return states.contains(WidgetState.disabled)
+                ? Colors.black // 非活性の場合
+                : Colors.blueAccent;
+          }),
+          foregroundColor:
+              WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+            return states.contains(WidgetState.disabled)
+                ? Colors.white // 非活性の場合
+                : Colors.white;
+          }),
         ),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: Colors.black,
-        selectedIconTheme: IconThemeData(size: 30, color: Colors.lightBlue),
+        selectedIconTheme: IconThemeData(size: 24, color: Colors.lightBlue),
         unselectedIconTheme: IconThemeData(size: 24, color: Colors.grey),
       ),
       colorScheme: const ColorScheme.dark(
         // プライマリカラー(アプリ全体で主要な色)
-        primary: Colors.white,
+        primary: Colors.blueAccent,
         // セカンダリカラー(プライマリカラーの次に主要な色)
-        secondary: Colors.lightBlueAccent,
+        secondary: Colors.white,
         // プライマリカラーの上に表示されるテキストやアイコンの色
-        onPrimary: Colors.lightBlueAccent,
+        onPrimary: Colors.white,
         // セカンダリカラーの上に表示されるテキストやアイコンの色
-        onSecondary: Colors.white,
+        onSecondary: Colors.blueAccent,
       ),
       textTheme: CustomTextTheme.build(),
       cardTheme: const CardTheme(

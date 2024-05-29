@@ -7,8 +7,24 @@ class LightThemeData {
       // こことpubspec.yamlのfonts.familyの値を合わせないと指定したフォントが適用されない
       fontFamily: 'NotoSansJP',
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        selectedIconTheme: IconThemeData(size: 30, color: Colors.blueAccent),
+        selectedIconTheme: IconThemeData(size: 24, color: Colors.blueAccent),
         unselectedIconTheme: IconThemeData(size: 24, color: Colors.grey),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor:
+              WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+            return states.contains(WidgetState.disabled)
+                ? Colors.grey.shade700 // 非活性の場合
+                : Colors.blueAccent;
+          }),
+          foregroundColor:
+              WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+            return states.contains(WidgetState.disabled)
+                ? Colors.white // 非活性の場合
+                : Colors.white;
+          }),
+        ),
       ),
       colorScheme: const ColorScheme.light(
         // プライマリカラー(アプリ全体で主要な色)
@@ -22,11 +38,9 @@ class LightThemeData {
       ),
       visualDensity: VisualDensity.adaptivePlatformDensity,
       textTheme: CustomTextTheme.build(),
-      cardTheme: const CardTheme(
-        // MaterialColorじゃないとエラーが出るので一旦指定
-        color: Colors.grey,
-      ) // copyWithメソッドで、色を微調整
-          .copyWith(color: Colors.blue.shade50),
+      cardTheme: CardTheme(
+        color: Colors.blue.shade50,
+      ),
     );
   }
 }
