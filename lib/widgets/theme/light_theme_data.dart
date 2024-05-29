@@ -2,6 +2,9 @@ import 'package:alexa_to_ai/widgets/theme/custom_text_theme.dart';
 import 'package:flutter/material.dart';
 
 class LightThemeData {
+  // constメソッドでメモリ効率とパフォーマンスを向上
+  const LightThemeData();
+
   ThemeData build() {
     return ThemeData(
       // こことpubspec.yamlのfonts.familyの値を合わせないと指定したフォントが適用されない
