@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CustomCard extends StatelessWidget {
-  final Column column;
+  final Widget content;
 
-  const CustomCard({super.key, required this.column});
+  const CustomCard({super.key, required this.content});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class CustomCard extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: column,
+        child: content,
       ),
     );
   }

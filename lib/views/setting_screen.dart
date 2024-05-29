@@ -116,7 +116,7 @@ class SettingScreen extends HookConsumerWidget {
               const SectionTitle(title: 'AIのレスポンス'),
               const SizedBox(height: 8.0),
               CustomCard(
-                column: Column(
+                content: Column(
                   children: [
                     // 口調/キャラクター名の入力フォーム
                     // TODO TextFieldの入力中に画面描画が行われると、フォーカスが失われるため、キーボードの予測変換が閉じてしまう
@@ -132,7 +132,7 @@ class SettingScreen extends HookConsumerWidget {
               const SectionTitle(title: '使用するAI'),
               const SizedBox(height: 8.0),
               CustomCard(
-                column: Column(
+                content: Column(
                   children: [
                     // AIの種類(ChatGPT、Geminiなど)の選択
                     LabeledDropdownField(
