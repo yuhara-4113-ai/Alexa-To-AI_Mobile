@@ -21,7 +21,7 @@ class LightThemeData {
         onSecondary: Colors.blueAccent,
       ),
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      textTheme: CustomTextTheme().build(),
+      textTheme: CustomTextTheme.build(),
       cardTheme: const CardTheme(
         // MaterialColorじゃないとエラーが出るので一旦指定
         color: Colors.grey,

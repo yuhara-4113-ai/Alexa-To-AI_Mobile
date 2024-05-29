@@ -28,7 +28,7 @@ class DarkThemeData {
         // セカンダリカラーの上に表示されるテキストやアイコンの色
         onSecondary: Colors.white,
       ),
-      textTheme: CustomTextTheme().build(),
+      textTheme: CustomTextTheme.build(),
       cardTheme: const CardTheme(
         color: Colors.black,
       ),
