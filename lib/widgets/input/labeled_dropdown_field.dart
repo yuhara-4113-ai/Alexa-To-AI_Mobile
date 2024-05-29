@@ -13,6 +13,14 @@ class LabeledDropdownField extends StatelessWidget {
       required this.selected,
       required this.onChanged});
 
+  // Stateを無駄に再構築しないようにconstで定義
+  static const _inputDecoration = InputDecoration(
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+    ),
+    contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
+  );
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -21,14 +29,7 @@ class LabeledDropdownField extends StatelessWidget {
         Text(label, style: Theme.of(context).textTheme.bodyMedium),
         const SizedBox(height: 6.0),
         DropdownButtonFormField<String>(
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            // 高さを調整
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
-          ),
+          decoration: _inputDecoration,
           value: selected,
           items: options.map((String value) {
             return DropdownMenuItem<String>(
