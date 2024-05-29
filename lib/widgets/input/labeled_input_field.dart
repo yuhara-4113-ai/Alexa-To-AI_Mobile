@@ -16,6 +16,18 @@ class LabeledInputField extends StatelessWidget {
     this.suffixIcon,
   });
 
+  InputDecoration get _inputDecoration {
+    return InputDecoration(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      contentPadding:
+          const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
+      hintText: placeholder,
+      suffixIcon: suffixIcon,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -26,16 +38,7 @@ class LabeledInputField extends StatelessWidget {
         TextField(
           controller: controller,
           obscureText: obscureText,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            // 高さを調整
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
-            hintText: placeholder,
-            suffixIcon: suffixIcon,
-          ),
+          decoration: _inputDecoration,
         ),
       ],
     );
