@@ -19,18 +19,13 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'ChatGPT-Review')
     runs-on: ubuntu-latest
     steps:
-      - name: Print all labels for debugging
-        run: |
-          echo "Labels: $(echo ${GITHUB_EVENT_PULL_REQUEST_LABELS[*]})"
-        env:
-          GITHUB_EVENT_PULL_REQUEST_LABELS: ${{ toJSON(github.event.pull_request.labels) }}
-
       # ラベル名から使用するモデルを使い分ける(以下で使用可能なモデルを確認可能)
       # デフォルトはgpt-3.5-turbo
       # https://platform.openai.com/docs/models
       - name: Determine Model
         run: |
-          echo "LABEL_NAMES: $(echo ${LABEL_NAMES})"
+          LABEL_NAMES=$(echo ${{ github.event.pull_request.labels[*].name }})
+          echo "LABEL_NAMES: $LABEL_NAMES"
           if echo "${LABEL_NAMES}" | grep -q 'gpt-4o'; then
             echo "MODEL=gpt-4o" >> $GITHUB_ENV
           else
