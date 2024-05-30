@@ -1,40 +1,35 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'setting_screen_model.dart';
+part of 'ai_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class SettingScreenModelAdapter extends TypeAdapter<SettingScreenModel> {
+class AIModelAdapter extends TypeAdapter<AIModel> {
   @override
-  final int typeId = 0;
+  final int typeId = 1;
 
   @override
-  SettingScreenModel read(BinaryReader reader) {
+  AIModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return SettingScreenModel()
-      ..aiTone = fields[0] as String
-      ..isSaved = fields[1] as bool
-      ..selectedType = fields[2] as String
-      ..aiModelsPerType = (fields[3] as Map).cast<String, AIModel>();
+    return AIModel(
+      apiKey: fields[0] as String,
+      model: fields[1] as String,
+    );
   }
 
   @override
-  void write(BinaryWriter writer, SettingScreenModel obj) {
+  void write(BinaryWriter writer, AIModel obj) {
     writer
-      ..writeByte(4)
-      ..writeByte(0)
-      ..write(obj.aiTone)
-      ..writeByte(1)
-      ..write(obj.isSaved)
       ..writeByte(2)
-      ..write(obj.selectedType)
-      ..writeByte(3)
-      ..write(obj.aiModelsPerType);
+      ..writeByte(0)
+      ..write(obj.apiKey)
+      ..writeByte(1)
+      ..write(obj.model);
   }
 
   @override
@@ -43,7 +38,7 @@ class SettingScreenModelAdapter extends TypeAdapter<SettingScreenModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SettingScreenModelAdapter &&
+      other is AIModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

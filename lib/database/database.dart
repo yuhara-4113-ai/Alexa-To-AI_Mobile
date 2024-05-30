@@ -1,3 +1,4 @@
+import 'package:alexa_to_ai/models/ai_model.dart';
 import 'package:alexa_to_ai/models/setting_screen_model.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -13,6 +14,7 @@ Future<void> initHive() async {
       await path_provider.getApplicationDocumentsDirectory();
   Hive.init(appDocumentDirectory.path);
   Hive.registerAdapter(SettingScreenModelAdapter());
+  Hive.registerAdapter(AIModelAdapter());
   // 初期化時にopenして後続処理で自由に使えるようにする
   settingModelBox = await Hive.openBox<SettingScreenModel>(settingModelBoxName);
   // データがない場合は初期化して事実上nullが発生しない状態にする

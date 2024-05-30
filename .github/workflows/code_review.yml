@@ -1,0 +1,67 @@
+name: Code Review
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - "**.dart"
+      - "**.yml"
+      - "**.yaml"
+
+jobs:
+  gpt-review:
+    # ChatGPT-ReviewというラベルがついているPRのみ実行
+    if: contains(github.event.pull_request.labels.*.name, 'ChatGPT-Review')
+    runs-on: ubuntu-latest
+    steps:
+      # ラベル名から使用するモデルを使い分ける(以下で使用可能なモデルを確認可能)
+      # デフォルトはgpt-3.5-turbo
+      # https://platform.openai.com/docs/models
+      - name: Determine Model
+        run: |
+          if [[ $(echo "${{ github.event.pull_request.labels.*.name }}" | grep -q 'gpt-4o') ]]; then
+            echo "MODEL=gpt-4o" >> $GITHUB_ENV
+          else
+            echo "MODEL=gpt-3.5-turbo" >> $GITHUB_ENV
+          fi
+
+      # ここはGitHub Actionsで使用するリポジトリを指定(レビュー対象の自分のリポジトリではない)
+      - uses: anc95/ChatGPT-CodeReview@main
+        env:
+          # ChatGPT-CodeReviewで必要な環境変数
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          # 以下はOptional項目
+          LANGUAGE: Japanese
+          OPENAI_API_ENDPOINT: https://api.openai.com/v1
+          MODEL: ${{ env.MODEL }}
+          PROMPT: |
+            # 前提
+            あなたはベテランのFlutterエンジニアです。回答は日本語でお願いします。
+            渡されたコードについて改善点を見つけ、変更する理由を説明した上で、変更後のコード例を示してください。
+            # レビュー対象ファイル
+            以下のファイルのみをレビューしてください：
+              - `**.dart` ファイル
+              - `**.yml` ファイル
+              - `**.yaml` ファイル
+            # レビューのポイント
+            「指摘」や「改善点」が特にない場合は絶対にコメントしないこと。
+            誰にとっても読みやすいコードになるよう、改善点を見つけたら積極的にレビューしてください。
+            次の点を指摘してください：
+              - 誤解を招いたり、実態を正確に表していない命名があるか
+              - 適度に変数を定義し自己ドキュメントされているか
+              - 冗長な書き方のコードがないか
+              - 適切にWidgetを分離しているか
+              - N+1問題（N+1 query problem）を引き起こす箇所
+              - 読んで理解が難しい箇所にコメントが適切にされているか
+              - コメントの内容が簡潔でわかりやすいか
+              - 理解の難しい複雑な条件式が作られていないか
+              - 明らかなセキュリティの問題があるか
+          top_p: 1
+          temperature: 1
+          max_tokens: 4096
+          MAX_PATCH_LENGTH: 4096
