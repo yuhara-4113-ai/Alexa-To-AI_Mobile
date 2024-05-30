@@ -30,11 +30,14 @@ jobs:
       # https://platform.openai.com/docs/models
       - name: Determine Model
         run: |
-          if echo "${{ github.event.pull_request.labels.*.name }}" | grep -q 'gpt-4o'; then
+          echo "LABEL_NAMES: $(echo ${LABEL_NAMES})"
+          if echo "${LABEL_NAMES}" | grep -q 'gpt-4o'; then
             echo "MODEL=gpt-4o" >> $GITHUB_ENV
           else
             echo "MODEL=gpt-3.5-turbo" >> $GITHUB_ENV
           fi
+        env:
+          LABEL_NAMES: ${{ toJSON(github.event.pull_request.labels.*.name) }}
 
       # ここはGitHub Actionsで使用するリポジトリを指定(レビュー対象の自分のリポジトリではない)
       - uses: anc95/ChatGPT-CodeReview@main
