@@ -7,6 +7,7 @@ permissions:
 on:
   pull_request:
     types: [opened, reopened, synchronize]
+    # ワークフローの起動トリガーのファイル拡張子
     paths:
       - "**.dart"
       - "**.yml"
@@ -18,6 +19,11 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'ChatGPT-Review')
     runs-on: ubuntu-latest
     steps:
+      - name: Print all labels for debugging
+        run: |
+          echo "Labels: $(echo ${GITHUB_EVENT_PULL_REQUEST_LABELS[*]})"
+          echo "if文の式: $(echo ${{ github.event.pull_request.labels.*.name }})"
+
       # ラベル名から使用するモデルを使い分ける(以下で使用可能なモデルを確認可能)
       # デフォルトはgpt-3.5-turbo
       # https://platform.openai.com/docs/models
