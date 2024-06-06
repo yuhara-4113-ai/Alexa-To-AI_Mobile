@@ -39,6 +39,10 @@ dependencies:
   anthropic_dart: ^1.0.1
   # 生体認証に使用
   local_auth: ^2.2.0
+  # cognitoの認証に使用
+  amplify_flutter: ^2.0.0
+  amplify_auth_cognito: ^2.0.0
+  amplify_authenticator: ^2.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
