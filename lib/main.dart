@@ -1,11 +1,9 @@
-import 'package:alexa_to_ai/auth/amplifyconfiguration.dart';
 import 'package:alexa_to_ai/database/database.dart';
+import 'package:alexa_to_ai/services/login_authentication_service.dart';
 import 'package:alexa_to_ai/widgets/navigation/footer.dart';
 import 'package:alexa_to_ai/widgets/theme/dark_theme_data.dart';
 import 'package:alexa_to_ai/widgets/theme/light_theme_data.dart';
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,11 +21,13 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  final loginAuthenticationService = LoginAuthenticationService();
+
   // アプリケーション起動時の処理
   @override
   void initState() {
     super.initState();
-    // initState内で非同期処理を行う場合はaddPostFrameCallbackを使用する
+    // initState内で非同期処理を行う処理群
     someAsyncFunction();
   }
 
@@ -38,18 +38,7 @@ class _AppState extends State<App> {
     WidgetsFlutterBinding.ensureInitialized();
     await initHive();
     // Cognitoで認証を行うための事前処理
-    await _configureAmplify();
-  }
-
-  Future<void> _configureAmplify() async {
-    try {
-      await Amplify.addPlugin(AmplifyAuthCognito());
-      // Amplifyの設定をロード
-      await Amplify.configure(amplifyconfig);
-      debugPrint('Amplify configured successfully');
-    } catch (e) {
-      debugPrint('Failed to configure Amplify: $e');
-    }
+    await loginAuthenticationService.configureAmplify();
   }
 
   @override

@@ -17,8 +17,8 @@ class AIModelAdapter extends TypeAdapter<AIModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return AIModel(
-      apiKey: fields[0] as String,
-      model: fields[1] as String,
+      apiKey: fields[0] as String?,
+      model: fields[1] as String?,
     );
   }
 

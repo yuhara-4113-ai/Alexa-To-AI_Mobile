@@ -1,9 +1,10 @@
 import 'package:alexa_to_ai/database/database.dart';
 import 'package:alexa_to_ai/models/ai_model.dart';
 import 'package:alexa_to_ai/models/setting_screen_model.dart';
+import 'package:alexa_to_ai/providers/biometric_authentication_service_provider.dart';
 import 'package:alexa_to_ai/providers/setting_screen_model_provider.dart';
-import 'package:alexa_to_ai/services/auth_service.dart';
 import 'package:alexa_to_ai/services/cloud_storage_service.dart';
+import 'package:alexa_to_ai/services/login_authentication_service.dart';
 import 'package:alexa_to_ai/widgets/barrel/setting_screen_widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -27,7 +28,7 @@ class SettingScreen extends HookConsumerWidget {
     // 画面描画後に1度だけ呼び出されるメソッド
     useEffect(() {
       // 画面に表示する設定画面のmodelを取得
-      _setViewnModel(settingScreenModelProvider);
+      _setViewModel(settingScreenModelProvider);
       return () {
         // このコードはウィジェットが破棄されるときに実行されます
         // disposeのような動作を行います
@@ -83,13 +84,14 @@ class SettingScreen extends HookConsumerWidget {
 
     // 生体認証の認証結果の状態を保持(画面初期表示時は非認証状態)
     final isAuthenticating = useState(false);
-    // シングルトンのAuthServiceを取得
-    // final authService = ref.watch(authServiceProvider);
-    final authService = AuthService();
+    // シングルトンのBiometricAuthenticationServiceを取得
+    final biometricAuthenticationService =
+        ref.watch(biometricAuthenticationServiceProvider);
+
     // 生体認証を実行
     Future<void> authenticate() async {
       try {
-        bool authResult = await authService.authenticate();
+        bool authResult = await biometricAuthenticationService.auth();
         // 生体認証が成功した場合は、認証状態の更新とAPIキーを表示に切り替える
         if (authResult) {
           isAuthenticating.value = true;
@@ -268,7 +270,8 @@ class SettingScreen extends HookConsumerWidget {
       ..aiTone = model.aiTone
       ..isSaved = true
       ..selectedType = model.selectedType
-      ..aiModelsPerType = model.copyAiModelsPerType();
+      ..aiModelsPerType = model.copyAiModelsPerType()
+      ..userId = model.userId;
 
     // ローカルDBに保存
     await settingModelBox.put(settingModelBoxKey, saveData);
@@ -293,16 +296,19 @@ class SettingScreen extends HookConsumerWidget {
   }
 
   /// ローカルDBに保存されている設定がある場合は、状態保持中のmodelに設定を反映
-  void _setViewnModel(SettingScreenModel settingScreenModelProvider) {
+  Future<void> _setViewModel(SettingScreenModel viewModel) async {
     final settingModel = settingModelBox.get(settingModelBoxKey);
     debugPrint('ローカルDBの設定を状態保持中のmodelに反映');
     debugPrint('_setViewnModel box: ${settingModel?.toJson()}');
-    debugPrint('_setViewnModel this: ${settingScreenModelProvider.toJson()}');
+    debugPrint('_setViewnModel this: ${viewModel.toJson()}');
 
-    settingScreenModelProvider.aiTone = settingModel!.aiTone;
-    settingScreenModelProvider.selectedType = settingModel.selectedType;
-    settingScreenModelProvider.aiModelsPerType =
-        settingModel.copyAiModelsPerType();
+    viewModel.aiTone = settingModel!.aiTone;
+    viewModel.selectedType = settingModel.selectedType;
+    viewModel.aiModelsPerType = settingModel.copyAiModelsPerType();
+
+    // ユーザーIDは都度、認証情報から取得
+    final loginAuthenticationService = LoginAuthenticationService();
+    viewModel.userId = await loginAuthenticationService.getUserId();
   }
 
   // NOTE: 実際に使った結果、スナックバーの表示は不要(失敗の時に通知できれば十分)だったのでコメントアウト(将来使う時に備えて残しておく)
