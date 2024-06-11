@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'dart:developer';
+
 import 'package:local_auth/local_auth.dart';
 
 class BiometricAuthenticationService {
@@ -25,7 +26,7 @@ class BiometricAuthenticationService {
         ),
       );
     } catch (e) {
-      debugPrint(e.toString());
+      log(e.toString());
       return false;
     }
   }

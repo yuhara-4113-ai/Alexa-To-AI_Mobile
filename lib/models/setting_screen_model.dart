@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:alexa_to_ai/database/database.dart';
 import 'package:alexa_to_ai/models/ai_model.dart';
-import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 part 'setting_screen_model.g.dart';
@@ -73,11 +73,7 @@ class SettingScreenModel extends HiveObject {
   bool compareWithLocalDB() {
     final settingModel = settingModelBox.get(settingModelBoxKey);
     final isCompareWithLocalDB = !settingScreenModelEquals(settingModel!);
-
-    debugPrint('compareWithLocalDB_box: ${settingModel.toJson()}');
-    debugPrint('compareWithLocalDB_this: ${toJson()}');
-
-    debugPrint('compareWithLocalDB_result: $isCompareWithLocalDB');
+    log('compareWithLocalDB_result: $isCompareWithLocalDB');
 
     return isCompareWithLocalDB;
   }

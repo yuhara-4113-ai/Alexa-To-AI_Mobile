@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:alexa_to_ai/database/database.dart';
 import 'package:alexa_to_ai/models/ai_model.dart';
 import 'package:alexa_to_ai/models/setting_screen_model.dart';
@@ -6,6 +8,8 @@ import 'package:alexa_to_ai/providers/setting_screen_model_provider.dart';
 import 'package:alexa_to_ai/services/cloud_storage_service.dart';
 import 'package:alexa_to_ai/services/login_authentication_service.dart';
 import 'package:alexa_to_ai/widgets/barrel/setting_screen_widgets.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -270,45 +274,55 @@ class SettingScreen extends HookConsumerWidget {
       ..aiTone = model.aiTone
       ..isSaved = true
       ..selectedType = model.selectedType
-      ..aiModelsPerType = model.copyAiModelsPerType()
-      ..userId = model.userId;
+      ..aiModelsPerType = model.copyAiModelsPerType();
 
     // ローカルDBに保存
     await settingModelBox.put(settingModelBoxKey, saveData);
 
-    debugPrint('_saveSettings box: ${saveData.toJson()}');
+    log('_saveSettings box: ${saveData.toJson()}');
 
     // boxとの差分状態を更新
     isCompareWithLocalDB.value = model.compareWithLocalDB();
 
+    // ユーザーIDは都度、認証情報から取得
+    final loginAuthenticationService = LoginAuthenticationService();
+    late CognitoAuthSession session;
+    try {
+      // 認証情報(ユーザーID、IDトークンなど)のセッションを取得
+      session = await loginAuthenticationService.getAuthSession();
+    } catch (e) {
+      // 認証情報が取得できない場合は、認証画面に遷移
+      await Amplify.Auth.signOut();
+    }
+    String userId = loginAuthenticationService.getUserId(session);
+    model.userId = userId;
+    // IDトークンは都度、認証情報から取得
+    String idToken = loginAuthenticationService.getIdToken(session);
+
     // 設定内容をクラウド上に保存する関数を実行
     // 結果を画面に表示
-    cloudStorageService.saveAISettingData(model).then((success) {
+    cloudStorageService.saveAISettingData(model, idToken).then((success) {
       if (success) {
         // _showSnackBar(context);
       } else {
         _showAlertDialog(context);
       }
     }).catchError((error) {
-      debugPrint(error.toString());
-      debugPrint(error.stackTrace.toString());
+      log(error.toString());
+      log(error.stackTrace.toString());
     });
   }
 
   /// ローカルDBに保存されている設定がある場合は、状態保持中のmodelに設定を反映
   Future<void> _setViewModel(SettingScreenModel viewModel) async {
     final settingModel = settingModelBox.get(settingModelBoxKey);
-    debugPrint('ローカルDBの設定を状態保持中のmodelに反映');
-    debugPrint('_setViewnModel box: ${settingModel?.toJson()}');
-    debugPrint('_setViewnModel this: ${viewModel.toJson()}');
+    log('ローカルDBの設定を状態保持中のmodelに反映');
+    log('_setViewnModel box: ${settingModel?.toJson()}');
+    log('_setViewnModel this: ${viewModel.toJson()}');
 
     viewModel.aiTone = settingModel!.aiTone;
     viewModel.selectedType = settingModel.selectedType;
     viewModel.aiModelsPerType = settingModel.copyAiModelsPerType();
-
-    // ユーザーIDは都度、認証情報から取得
-    final loginAuthenticationService = LoginAuthenticationService();
-    viewModel.userId = await loginAuthenticationService.getUserId();
   }
 
   // NOTE: 実際に使った結果、スナックバーの表示は不要(失敗の時に通知できれば十分)だったのでコメントアウト(将来使う時に備えて残しておく)
