@@ -44,6 +44,10 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return Authenticator(
+      // サインイン画面(ソーシャルログインのボタンのみ)だけを表示したいが、独自で画面を用意する必要がある(めんどくさいので標準のUIを使用)
+      // せめてユーザーIDなどを非表示(fieldsを空定義)にしてソーシャルログインが目立つようにしている
+      signInForm: const SignInForm.custom(fields: []),
+      signUpForm: const SignUpForm.custom(fields: []),
       child: MaterialApp(
         // 認証画面を表示
         builder: Authenticator.builder(),
