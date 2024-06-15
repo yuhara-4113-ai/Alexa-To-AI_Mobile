@@ -9,37 +9,26 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // アプリケーションのエントリーポイント
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // アプリ起動時の非同期処理を実行
+  await someAsyncFunction();
   runApp(const App());
 }
 
-class App extends StatefulWidget {
-  const App({super.key});
-
-  @override
-  State<App> createState() => _AppState();
+Future<void> someAsyncFunction() async {
+  // .envファイルの読み込み
+  await dotenv.load();
+  // ローカルデータベースを初期化
+  WidgetsFlutterBinding.ensureInitialized();
+  await initHive();
+  // Cognitoで認証を行うための事前処理
+  final loginAuthenticationService = LoginAuthenticationService();
+  await loginAuthenticationService.configureAmplify();
 }
 
-class _AppState extends State<App> {
-  final loginAuthenticationService = LoginAuthenticationService();
-
-  // アプリケーション起動時の処理
-  @override
-  void initState() {
-    super.initState();
-    // initState内で非同期処理を行う処理群
-    someAsyncFunction();
-  }
-
-  Future<void> someAsyncFunction() async {
-    // .envファイルの読み込み
-    await dotenv.load();
-    // ローカルデータベースを初期化
-    WidgetsFlutterBinding.ensureInitialized();
-    await initHive();
-    // Cognitoで認証を行うための事前処理
-    await loginAuthenticationService.configureAmplify();
-  }
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,19 +37,38 @@ class _AppState extends State<App> {
       // せめてユーザーIDなどを非表示(fieldsを空定義)にしてソーシャルログインが目立つようにしている
       signInForm: const SignInForm.custom(fields: []),
       signUpForm: const SignUpForm.custom(fields: []),
-      child: MaterialApp(
-        // 認証画面を表示
-        builder: Authenticator.builder(),
-        // 各画面の入力状態の保持に使用するProviderScope
-        home: ProviderScope(
-          child: MaterialApp(
-            themeMode: ThemeMode.system,
-            darkTheme: const DarkThemeData().build(),
-            theme: const LightThemeData().build(),
-            home: const Footer(),
-          ),
+      // 各画面の入力状態の保持に使用するProviderScope
+      child: ProviderScope(
+        child: MaterialApp(
+          // 未認証であれば認証画面を表示
+          builder: Authenticator.builder(),
+          themeMode: ThemeMode.system,
+          darkTheme: const DarkThemeData().build(),
+          theme: const LightThemeData().build(),
+          home: const Footer(),
         ),
       ),
     );
   }
+  // Widget build(BuildContext context) {
+  //   return Authenticator(
+  //     // サインイン画面(ソーシャルログインのボタンのみ)だけを表示したいが、独自で画面を用意する必要がある(めんどくさいので標準のUIを使用)
+  //     // せめてユーザーIDなどを非表示(fieldsを空定義)にしてソーシャルログインが目立つようにしている
+  //     signInForm: const SignInForm.custom(fields: []),
+  //     signUpForm: const SignUpForm.custom(fields: []),
+  //     child: MaterialApp(
+  //       // 認証画面を表示
+  //       builder: Authenticator.builder(),
+  //       // 各画面の入力状態の保持に使用するProviderScope
+  //       home: ProviderScope(
+  //         child: MaterialApp(
+  //           themeMode: ThemeMode.system,
+  //           darkTheme: const DarkThemeData().build(),
+  //           theme: const LightThemeData().build(),
+  //           home: const Footer(),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }
