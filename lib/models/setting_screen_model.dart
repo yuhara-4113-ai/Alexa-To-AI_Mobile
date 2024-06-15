@@ -1,11 +1,13 @@
 import 'dart:convert';
-import 'dart:developer';
+import 'package:logger/logger.dart';
 
 import 'package:alexa_to_ai/database/database.dart';
 import 'package:alexa_to_ai/models/ai_model.dart';
 import 'package:hive/hive.dart';
 
 part 'setting_screen_model.g.dart';
+
+final log = Logger();
 
 /// 設定画面のmodel
 /// build_runnerでAdapter(Hiveに保存するためのバイナリデータ)を生成
@@ -73,7 +75,7 @@ class SettingScreenModel extends HiveObject {
   bool compareWithLocalDB() {
     final settingModel = settingModelBox.get(settingModelBoxKey);
     final isCompareWithLocalDB = !settingScreenModelEquals(settingModel!);
-    log('compareWithLocalDB_result: $isCompareWithLocalDB');
+    log.i('compareWithLocalDB_result: $isCompareWithLocalDB');
 
     return isCompareWithLocalDB;
   }

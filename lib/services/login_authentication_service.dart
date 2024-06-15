@@ -1,8 +1,10 @@
-import 'dart:developer';
+import 'package:logger/logger.dart';
 
 import 'package:alexa_to_ai/auth/amplifyconfiguration.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+
+final log = Logger();
 
 class LoginAuthenticationService {
   // インスタンスをシングルトンにする
@@ -17,9 +19,9 @@ class LoginAuthenticationService {
       await Amplify.addPlugin(AmplifyAuthCognito());
       // Amplifyの設定をロード
       await Amplify.configure(amplifyconfig);
-      log('Amplify configured successfully');
+      log.i('Amplify configured successfully');
     } catch (e) {
-      log('Failed to configure Amplify: $e');
+      log.e('Failed to configure Amplify: $e');
     }
   }
 
@@ -34,7 +36,7 @@ class LoginAuthenticationService {
       final session = response as CognitoAuthSession;
       return session;
     } catch (e) {
-      log('Get ID token failed: $e');
+      log.e('Get ID token failed: $e');
       throw Exception('Not signed in');
     }
   }

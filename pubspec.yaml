@@ -43,6 +43,8 @@ dependencies:
   amplify_flutter: ^2.0.0
   amplify_auth_cognito: ^2.0.0
   amplify_authenticator: ^2.0.0
+  # ログ出力に使用
+  logger: ^2.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

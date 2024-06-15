@@ -1,6 +1,7 @@
-import 'dart:developer';
-
 import 'package:local_auth/local_auth.dart';
+import 'package:logger/logger.dart';
+
+final log = Logger();
 
 class BiometricAuthenticationService {
   // インスタンスをシングルトンにする
@@ -26,7 +27,7 @@ class BiometricAuthenticationService {
         ),
       );
     } catch (e) {
-      log(e.toString());
+      log.e(e.toString());
       return false;
     }
   }
