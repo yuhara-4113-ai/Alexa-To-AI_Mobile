@@ -89,8 +89,7 @@ class SettingScreen extends HookConsumerWidget {
     // 生体認証の認証結果の状態を保持(画面初期表示時は非認証状態)
     final isAuthenticating = useState(false);
     // シングルトンのBiometricAuthenticationServiceを取得
-    final biometricAuthenticationService =
-        ref.watch(biometricAuthenticationServiceProvider);
+    final biometricAuthenticationService = ref.watch(biometricAuthProvider);
 
     // 生体認証を実行
     Future<void> authenticate() async {
