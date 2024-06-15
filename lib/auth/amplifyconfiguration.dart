@@ -1,4 +1,6 @@
-const amplifyconfig = '''{
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+final String amplifyconfig = '''{
     "UserAgent": "aws-amplify-cli/2.0",
     "Version": "1.0",
     "auth": {
@@ -11,18 +13,18 @@ const amplifyconfig = '''{
                 },
                 "CognitoUserPool": {
                     "Default": {
-                        "PoolId": "ap-northeast-1_EeFWtE2bk",
-                        "AppClientId": "rdtm42a8482ick0d1kobl3d7b",
-                        "Region": "ap-northeast-1"
+                        "PoolId": "${dotenv.env['COGNITO_POOL_ID']}",
+                        "AppClientId": "${dotenv.env['COGNITO_APP_CLIENT_ID']}",
+                        "Region": "${dotenv.env['COGNITO_REGION']}"
                     }
                 },
                 "Auth": {
                     "Default": {
                         "OAuth": {
-                            "WebDomain": "alexa-to-ai.auth.ap-northeast-1.amazoncognito.com",
-                            "AppClientId": "rdtm42a8482ick0d1kobl3d7b",
-                            "SignInRedirectURI": "alexa-to-ai://callback/",
-                            "SignOutRedirectURI": "alexa-to-ai://signout/",
+                            "WebDomain": "${dotenv.env['COGNITO_WEB_DOMAIN']}",
+                            "AppClientId": "${dotenv.env['COGNITO_APP_CLIENT_ID']}",
+                            "SignInRedirectURI": "${dotenv.env['COGNITO_SIGNIN_REDIRECT_URI']}",
+                            "SignOutRedirectURI": "${dotenv.env['COGNITO_SIGNOUT_REDIRECT_URI']}",
                             "Scopes": [
                                 "openid",
                                 "profile"
