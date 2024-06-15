@@ -1,7 +1,10 @@
+import 'package:logger/logger.dart';
+
 import 'package:alexa_to_ai/models/ai_model.dart';
 import 'package:alexa_to_ai/services/ai_agent/ai_agent.dart';
-import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+
+final log = Logger();
 
 class GeminiAgent implements AIAgent {
   @override
@@ -11,7 +14,7 @@ class GeminiAgent implements AIAgent {
     final content = [Content.text(prompt)];
     final response = await model.generateContent(content);
 
-    debugPrint('Response from gemini-pro: $response');
+    log.i('Response from gemini-pro: $response');
 
     return response.text!;
   }

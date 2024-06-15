@@ -1,7 +1,10 @@
+import 'package:logger/logger.dart';
+
 import 'package:alexa_to_ai/models/ai_model.dart';
 import 'package:alexa_to_ai/services/ai_agent/ai_agent.dart';
 import 'package:anthropic_dart/anthropic_dart.dart';
-import 'package:flutter/foundation.dart';
+
+final log = Logger();
 
 class ClaudeAgent implements AIAgent {
   @override
@@ -15,11 +18,11 @@ class ClaudeAgent implements AIAgent {
     try {
       final Response response = await service.sendRequest(request: aiRequest);
       final String responseText = response.toJson()["content"][0]["text"];
-      debugPrint('Response body: $responseText');
+      log.i('Response body: $responseText');
 
       return responseText;
     } catch (e) {
-      debugPrint('Error while sending request: $e');
+      log.i('Error while sending request: $e');
       throw Exception("AIリクエストの送信中にエラーが発生しました");
     }
   }

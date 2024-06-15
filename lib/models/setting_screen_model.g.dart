@@ -20,13 +20,14 @@ class SettingScreenModelAdapter extends TypeAdapter<SettingScreenModel> {
       ..aiTone = fields[0] as String
       ..isSaved = fields[1] as bool
       ..selectedType = fields[2] as String
-      ..aiModelsPerType = (fields[3] as Map).cast<String, AIModel>();
+      ..aiModelsPerType = (fields[3] as Map).cast<String, AIModel>()
+      ..userId = fields[4] as String;
   }
 
   @override
   void write(BinaryWriter writer, SettingScreenModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.aiTone)
       ..writeByte(1)
@@ -34,7 +35,9 @@ class SettingScreenModelAdapter extends TypeAdapter<SettingScreenModel> {
       ..writeByte(2)
       ..write(obj.selectedType)
       ..writeByte(3)
-      ..write(obj.aiModelsPerType);
+      ..write(obj.aiModelsPerType)
+      ..writeByte(4)
+      ..write(obj.userId);
   }
 
   @override

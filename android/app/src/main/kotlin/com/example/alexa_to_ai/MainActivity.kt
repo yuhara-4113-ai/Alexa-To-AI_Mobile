@@ -1,4 +1,4 @@
-package com.example.flutter_test1
+package com.example.alexa_to_ai
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine

@@ -23,9 +23,10 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.example.flutter_test1"
+    namespace "com.example.alexa_to_ai"
     compileSdkVersion flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    // ndkVersion flutter.ndkVersion
+    ndkVersion "25.1.8937393"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -41,14 +42,16 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.flutter_test1"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        //アプリの一意の識別子。Google Playストアなどのアプリストアでアプリを一意に識別するために使用される
+        applicationId "com.example.alexa_to_ai"
+        // サポートする最小のAndroidバージョン
+        // amplify_flutterがサポートしてる最低バージョンに合わせる
+        minSdkVersion 27 // 
+        targetSdkVersion flutter.targetSdkVersion // アプリが最適化されていると想定するAndroidバージョン
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        // resValue "string", "app_name", "${dartDefines.appName}"
+        // archivesBaseName "${dartDefines.flavor}-${flutterVersionName}"
     }
 
     buildTypes {
@@ -63,5 +66,3 @@ android {
 flutter {
     source '../..'
 }
-
-dependencies {}

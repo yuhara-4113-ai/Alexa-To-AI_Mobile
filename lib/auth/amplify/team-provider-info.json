@@ -1,0 +1,25 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-alexatoaiauth-dev-d7742-authRole",
+      "UnauthRoleArn": "arn:aws:iam::098480521745:role/amplify-alexatoaiauth-dev-d7742-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::098480521745:role/amplify-alexatoaiauth-dev-d7742-authRole",
+      "Region": "ap-northeast-1",
+      "DeploymentBucketName": "amplify-alexatoaiauth-dev-d7742-deployment",
+      "UnauthRoleName": "amplify-alexatoaiauth-dev-d7742-unauthRole",
+      "StackName": "amplify-alexatoaiauth-dev-d7742",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:098480521745:stack/amplify-alexatoaiauth-dev-d7742/ca2c1950-23c2-11ef-b81b-0631853e715d",
+      "AmplifyAppId": "d39vjnwsjhjfj0"
+    },
+    "categories": {
+      "auth": {
+        "alexatoaiauth1e2defa0": {
+          "userPoolId": "ap-northeast-1_EeFWtE2bk",
+          "userPoolName": "AlexaToAIUserPool",
+          "webClientId": "rdtm42a8482ick0d1kobl3d7b",
+          "nativeClientId": "rdtm42a8482ick0d1kobl3d7b"
+        }
+      }
+    }
+  }
+}

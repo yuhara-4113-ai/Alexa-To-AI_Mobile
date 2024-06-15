@@ -1,7 +1,10 @@
+import 'package:logger/logger.dart';
+
 import 'package:alexa_to_ai/models/ai_model.dart';
 import 'package:alexa_to_ai/services/ai_agent/ai_agent.dart';
 import 'package:dart_openai/dart_openai.dart';
-import 'package:flutter/material.dart';
+
+final log = Logger();
 
 class ChatGPTAgent implements AIAgent {
   @override
@@ -34,10 +37,10 @@ class ChatGPTAgent implements AIAgent {
     );
 
     // TODO 入出力のtoken(total_tokens)を保持し、このアプリでどのくらいのtoken数(料金)を消費しているかを表示したい
-    debugPrint('totalTokens: ${response.usage.totalTokens.toString()}');
+    log.i('totalTokens: ${response.usage.totalTokens.toString()}');
 
     String responseText = response.choices.first.message.content![0].text!;
-    debugPrint('responseText: $responseText');
+    log.i('responseText: $responseText');
     return responseText;
   }
 

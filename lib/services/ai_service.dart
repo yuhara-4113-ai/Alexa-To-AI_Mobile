@@ -1,11 +1,14 @@
 // Flutterとその他のパッケージをインポート
+import 'package:logger/logger.dart';
+
 import 'package:alexa_to_ai/database/database.dart';
 import 'package:alexa_to_ai/models/ai_model.dart';
 import 'package:alexa_to_ai/services/ai_agent/ai_agent.dart';
 import 'package:alexa_to_ai/services/ai_agent/chat_gpt_agent.dart';
 import 'package:alexa_to_ai/services/ai_agent/claude_agent.dart';
 import 'package:alexa_to_ai/services/ai_agent/gemini_agent.dart';
-import 'package:flutter/material.dart';
+
+final log = Logger();
 
 class AIService {
   // インスタンスをシングルトンにする
@@ -21,7 +24,7 @@ class AIService {
   /// AIにリクエストを送信
   /// prompt: ユーザのチャット入力内容に「設定内容(キャラクター、口調など)」を付与した文字列
   Future<String> sendMessageToAi(String prompt) async {
-    debugPrint('prompt=$prompt');
+    log.i('prompt=$prompt');
 
     // 設定画面で保存した内容をローカルDBから取得
     final settingModel = settingModelBox.get(settingModelBoxKey);
@@ -30,15 +33,15 @@ class AIService {
     // 選択したAIの種別によって、処理を分ける
     switch (AITypes.getAITypeByName(settingModel.selectedType)) {
       case AITypes.chatGPT:
-        debugPrint('call ChatGPTAgent');
+        log.i('call ChatGPTAgent');
         _aiAgent = ChatGPTAgent();
         break;
       case AITypes.gemini:
-        debugPrint('call GeminiAgent');
+        log.i('call GeminiAgent');
         _aiAgent = GeminiAgent();
         break;
       case AITypes.claude:
-        debugPrint('call ClaudeAgent');
+        log.i('call ClaudeAgent');
         _aiAgent = ClaudeAgent();
         break;
     }

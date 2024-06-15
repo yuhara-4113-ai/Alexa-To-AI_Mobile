@@ -1,0 +1,19 @@
+{
+  "authSelections": "userPoolOnly",
+  "resourceName": "alexatoaiauth1e2defa0",
+  "serviceType": "imported",
+  "region": "ap-northeast-1",
+  "authProvidersUserPool": [
+    "LoginWithAmazon"
+  ],
+  "requiredAttributes": [],
+  "passwordPolicyMinLength": 8,
+  "passwordPolicyCharacters": [
+    "Requires Lowercase",
+    "Requires Uppercase",
+    "Requires Numbers",
+    "Requires Symbols"
+  ],
+  "mfaConfiguration": "OFF",
+  "mfaTypes": []
+}

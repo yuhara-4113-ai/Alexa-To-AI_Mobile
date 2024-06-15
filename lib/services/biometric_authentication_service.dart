@@ -1,19 +1,22 @@
-import 'package:flutter/foundation.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:logger/logger.dart';
 
-class AuthService {
+final log = Logger();
+
+class BiometricAuthenticationService {
   // インスタンスをシングルトンにする
-  AuthService._privateConstructor();
-  static final AuthService _instance = AuthService._privateConstructor();
-  factory AuthService() {
+  BiometricAuthenticationService._privateConstructor();
+  static final _instance = BiometricAuthenticationService._privateConstructor();
+  factory BiometricAuthenticationService() {
     return _instance;
   }
 
-  final LocalAuthentication auth = LocalAuthentication();
+  // 端末の生体認証を使えるようにするパッケージのインスタンス
+  final LocalAuthentication localAuthentication = LocalAuthentication();
 
-  Future<bool> authenticate() async {
+  Future<bool> auth() async {
     try {
-      return await auth.authenticate(
+      return await localAuthentication.authenticate(
         localizedReason: '生体認証でログインしてください',
         options: const AuthenticationOptions(
           // 生体認証以外のローカル認証はしない
@@ -24,7 +27,7 @@ class AuthService {
         ),
       );
     } catch (e) {
-      debugPrint(e.toString());
+      log.e(e.toString());
       return false;
     }
   }

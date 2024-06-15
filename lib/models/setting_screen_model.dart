@@ -1,11 +1,13 @@
 import 'dart:convert';
-
-import 'package:alexa_to_ai/models/ai_model.dart';
-import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:logger/logger.dart';
 
 import 'package:alexa_to_ai/database/database.dart';
+import 'package:alexa_to_ai/models/ai_model.dart';
+import 'package:hive/hive.dart';
+
 part 'setting_screen_model.g.dart';
+
+final log = Logger();
 
 /// 設定画面のmodel
 /// build_runnerでAdapter(Hiveに保存するためのバイナリデータ)を生成
@@ -28,6 +30,10 @@ class SettingScreenModel extends HiveObject {
   // 種別ごとのAIModel
   @HiveField(3)
   Map<String, AIModel> aiModelsPerType;
+
+  // ユーザーID
+  @HiveField(4)
+  String userId = '';
 
   // コンストラクタ
   SettingScreenModel() : aiModelsPerType = {} {
@@ -69,11 +75,7 @@ class SettingScreenModel extends HiveObject {
   bool compareWithLocalDB() {
     final settingModel = settingModelBox.get(settingModelBoxKey);
     final isCompareWithLocalDB = !settingScreenModelEquals(settingModel!);
-
-    debugPrint('compareWithLocalDB_box: ${settingModel.toJson()}');
-    debugPrint('compareWithLocalDB_this: ${toJson()}');
-
-    debugPrint('compareWithLocalDB_result: $isCompareWithLocalDB');
+    log.i('compareWithLocalDB_result: $isCompareWithLocalDB');
 
     return isCompareWithLocalDB;
   }
@@ -107,8 +109,7 @@ class SettingScreenModel extends HiveObject {
   // クラウド保存用のJSONを返す
   String convertJsonToCloudSave() {
     return jsonEncode({
-      // user_idはログイン機能が必要になって実装したら適宜変更する。とりあえず固定値
-      'user_id': '1',
+      'user_id': userId,
       'tone': aiTone,
       'selected_ai': selectedType,
       'ai_info': getAIModel(),
