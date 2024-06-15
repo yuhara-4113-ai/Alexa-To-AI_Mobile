@@ -42,9 +42,11 @@ android {
     }
 
     defaultConfig {
+        //アプリの一意の識別子。Google Playストアなどのアプリストアでアプリを一意に識別するために使用される
         applicationId "com.example.alexa_to_ai"
-        // applicationId "${dartDefines.appId}" //アプリの一意の識別子。Google Playストアなどのアプリストアでアプリを一意に識別するために使用される
-        minSdkVersion 27 // サポートする最小のAndroidバージョン
+        // サポートする最小のAndroidバージョン
+        // amplify_flutterがサポートしてる最低バージョンに合わせる
+        minSdkVersion 27 // 
         targetSdkVersion flutter.targetSdkVersion // アプリが最適化されていると想定するAndroidバージョン
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
