@@ -7,14 +7,19 @@ String saveAISettingUrl = env[EnvKey.saveAISettingUrl]!;
 final log = Logger();
 
 class CloudStorageService {
+  // インスタンスをシングルトンにする
+  CloudStorageService._privateConstructor();
+  static final _instance = CloudStorageService._privateConstructor();
+  factory CloudStorageService() {
+    return _instance;
+  }
+
   /// クラウド環境に保存した設定内容を送信
   Future<bool> saveAISettingData(
       SettingScreenModel saveData, String idToken) async {
     String apiKey = env[EnvKey.awsXApiKey]!;
     String body = saveData.convertJsonToCloudSave();
     log.i('saveAISetting body: $body');
-    // TODO 確認用なので後で消す
-    log.i('idToken.raw: $idToken');
 
     final http.Response response = await http.post(
       Uri.parse(saveAISettingUrl),
