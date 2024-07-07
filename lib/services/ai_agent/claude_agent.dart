@@ -6,31 +6,18 @@ import 'package:alexa_to_ai/models/ai_model.dart';
 import 'package:alexa_to_ai/services/ai_agent/ai_agent.dart';
 
 final log = Logger();
-final url = Uri.https('api.anthropic.com', '/v1/messages');
+const apiUrl = 'api.anthropic.com';
+const endpoint = '/v1/messages';
+const anthropicVersion = '2023-06-01';
 
 class ClaudeAgent implements AIAgent {
   @override
   Future<String> sendMessage(String prompt, AIModel aiModel) async {
-    final headers = {
-      'Content-Type': 'application/json',
-      'X-API-Key': aiModel.apiKey,
-      'Anthropic-Version': '2023-06-01',
-    };
+    final url = Uri.https(apiUrl, endpoint);
+    final headers = _buildHeaders(aiModel.apiKey);
 
-    final body = jsonEncode({
-      'model': aiModel.model,
-      'max_tokens': 500,
-      'system': "",
-      'messages': [
-        {'role': 'user', 'content': prompt},
-      ]
-    });
-
-    final response = await http.post(
-      url,
-      headers: headers,
-      body: body,
-    );
+    final body = _buildRequestBody(prompt, aiModel.model);
+    final response = await http.post(url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
       try {
@@ -38,12 +25,31 @@ class ClaudeAgent implements AIAgent {
             jsonDecode(utf8.decode(response.bodyBytes));
         return responseData['content'][0]['text'];
       } catch (e) {
-        log.e('Error decoding response: $e');
+        log.e('レスポンスのデコード中にエラーが発生しました: $e');
         throw Exception("AIリクエストの送信中にエラーが発生しました");
       }
     } else {
-      log.e('Error response: $response');
+      log.e('HTTPエラーレスポンス: ${response.statusCode} ${response.reasonPhrase}');
       throw Exception("AIリクエストの送信中にエラーが発生しました");
     }
+  }
+
+  Map<String, String> _buildHeaders(String apiKey) {
+    return {
+      'Content-Type': 'application/json',
+      'X-API-Key': apiKey,
+      'Anthropic-Version': anthropicVersion,
+    };
+  }
+
+  String _buildRequestBody(String prompt, String model) {
+    return jsonEncode({
+      'model': model,
+      'max_tokens': 500,
+      'system': "",
+      'messages': [
+        {'role': 'user', 'content': prompt},
+      ]
+    });
   }
 }
