@@ -36,7 +36,8 @@ dependencies:
   # Google AIのAPIリクエストに使用
   google_generative_ai: ^0.3.2
   # anthropic(Claude)のAPIリクエストに使用
-  anthropic_dart: ^1.0.1
+  # 自前(http)で実行すると3秒くらいだが、このパッケージ使うと3倍くらい遅くなるのでやめた(忘れないようにコメントアウトで残しておく)
+  # anthropic_dart: ^1.0.1
   # 生体認証に使用
   local_auth: ^2.2.0
   # cognitoの認証に使用
