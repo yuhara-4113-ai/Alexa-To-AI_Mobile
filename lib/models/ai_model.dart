@@ -38,10 +38,13 @@ enum AITypes {
     'gpt-4-turbo',
     'gpt-4o',
     'gpt-4o-mini',
+    'o1-preview',
+    'o1-mini',
   ]),
   gemini(name: 'Gemini', models: [
     'gemini-1.0-pro-latest',
     'gemini-1.5-flash-latest',
+    'gemini-1.5-flash-8b-latest',
     'gemini-1.5-pro-latest',
   ]),
   claude(name: 'Claude', models: [
