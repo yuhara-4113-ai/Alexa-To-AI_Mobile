@@ -63,13 +63,26 @@ class ChatAIScreenState extends ConsumerState<ChatAIScreen> {
     String aiTonePrompt = '';
     String aiTone = settingModel.aiTone;
     if (aiTone.isNotEmpty) {
-      aiTonePrompt = '口調は$aiTone。';
+      aiTonePrompt = '口調は$aiTone';
     }
     // TODO 最大文字数を設定画面でも可能に
-    String maxCharLimit = '回答は200文字以内。';
+    String maxCharLimit = '200';
 
     // ユーザの入力文字列に設定内容を付与し、AIに送信するプロンプトを作成
-    String prompt = maxCharLimit + aiTonePrompt + message;
+    String tempPrompt = """
+    # 前提
+    回答は$maxCharLimit文字以内で要約し、わかりやすく
+    $aiTonePrompt
+    # 質問
+    $message
+    """;
+
+    // フォーマッターによる半角スペースも含まれてしまうため、各行先頭の半角スペースは削除
+    String prompt = tempPrompt
+        .split('\n')
+        .map((line) => line.replaceFirst(RegExp(r'^ '), ''))
+        .join('\n');
+
     return prompt;
   }
 
