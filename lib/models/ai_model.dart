@@ -46,6 +46,7 @@ enum AITypes {
     'gemini-1.5-flash-latest',
     'gemini-1.5-flash-8b-latest',
     'gemini-1.5-pro-latest',
+    'gemini-exp-1114',
   ]),
   claude(name: 'Claude', models: [
     'claude-3-haiku-20240307',
