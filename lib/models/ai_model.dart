@@ -37,6 +37,7 @@ enum AITypes {
     'gpt-3.5-turbo',
     'gpt-4-turbo',
     'gpt-4o',
+    'chatgpt-4o-latest',
     'gpt-4o-mini',
     'o1-preview',
     'o1-mini',
