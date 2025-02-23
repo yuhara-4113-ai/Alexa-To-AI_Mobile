@@ -23,6 +23,9 @@ class LabeledDropdownField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // selectedがoptions内に存在しなければ、options.firstを使用する
+    final selectedViewValue =
+        options.contains(selected) ? selected : options.first;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -30,7 +33,7 @@ class LabeledDropdownField extends StatelessWidget {
         const SizedBox(height: 6.0),
         DropdownButtonFormField<String>(
           decoration: _inputDecoration,
-          value: selected,
+          value: selectedViewValue,
           items: options.map((String value) {
             return DropdownMenuItem<String>(
               value: value,
