@@ -1,10 +1,10 @@
 name: alexa_to_ai
-description: "アレクサがAIと連携する際に参照する設定を保存する"
-publish_to: "none"
+description: アレクサがAIと連携する際に参照する設定を保存する
+publish_to: none
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.2.0 <4.0.0"
+  sdk: '>=3.2.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -68,9 +68,9 @@ flutter:
         - asset: assets/google_fonts/NotoSansJP-Regular.ttf
 # アプリアイコンの設定
 flutter_icons:
-  image_path: "assets/images/app_icon.png"
+  image_path: assets/images/app_icon.png
   ios: true
   remove_alpha_ios: true
   android: true
-  adaptive_icon_background: "assets/images/launcher/icon_adaptive_background.png"
-  adaptive_icon_foreground: "assets/images/launcher/icon_adaptive_foreground.png"
+  adaptive_icon_background: assets/images/launcher/icon_adaptive_background.png
+  adaptive_icon_foreground: assets/images/launcher/icon_adaptive_foreground.png

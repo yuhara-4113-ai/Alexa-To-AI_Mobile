@@ -34,20 +34,18 @@ class AIModel extends HiveObject {
 
 enum AITypes {
   chatGPT(name: 'ChatGPT', models: [
-    'gpt-3.5-turbo',
-    'gpt-4-turbo',
-    'gpt-4o',
     'chatgpt-4o-latest',
     'gpt-4o-mini',
     'o1-preview',
     'o1-mini',
   ]),
   gemini(name: 'Gemini', models: [
-    'gemini-1.0-pro-latest',
-    'gemini-1.5-flash-latest',
-    'gemini-1.5-flash-8b-latest',
     'gemini-1.5-pro-latest',
-    'gemini-exp-1114',
+    'gemini-2.0-flash',
+    'gemini-2.0-flash-exp',
+    'gemini-2.0-flash-lite-preview',
+    'gemini-2.0-flash-thinking-exp',
+    'gemini-2.0-pro-exp',
   ]),
   claude(name: 'Claude', models: [
     'claude-3-haiku-20240307',
