@@ -38,6 +38,7 @@ enum AITypes {
     'gpt-4o-mini',
     'o1-preview',
     'o1-mini',
+    'gpt-4.5-preview',
   ]),
   gemini(name: 'Gemini', models: [
     'gemini-1.5-pro-latest',
@@ -53,6 +54,7 @@ enum AITypes {
     'claude-3-opus-latest',
     'claude-3-5-haiku-latest',
     'claude-3-5-sonnet-latest',
+    'claude-3-7-sonnet-20250219',
   ]);
 
   final String name;
