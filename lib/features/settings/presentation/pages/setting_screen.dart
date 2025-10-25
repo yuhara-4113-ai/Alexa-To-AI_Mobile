@@ -283,7 +283,7 @@ class SettingScreen extends HookConsumerWidget {
   Future<void> _setViewModel(SettingScreenModel viewModel) async {
     final SettingScreenModel? settingModel =
         settingModelBox.get(settingModelBoxKey);
-    log.e('ローカルDBの設定を状態保持中のmodelに反映');
+    log.i('ローカルDBの設定を状態保持中のmodelに反映');
     log.i('_setViewnModel box: ${settingModel?.toJson()}');
     log.i('_setViewnModel this: ${viewModel.toJson()}');
 
