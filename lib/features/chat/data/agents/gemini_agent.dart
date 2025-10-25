@@ -1,0 +1,21 @@
+import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:logger/logger.dart';
+
+import 'package:alexa_to_ai/features/chat/data/agents/ai_agent.dart';
+import 'package:alexa_to_ai/features/settings/domain/models/ai_model.dart';
+
+final log = Logger();
+
+class GeminiAgent implements AIAgent {
+  @override
+  Future<String> sendMessage(String prompt, AIModel aiModel) async {
+    final model = GenerativeModel(model: aiModel.model, apiKey: aiModel.apiKey);
+
+    final content = [Content.text(prompt)];
+    final response = await model.generateContent(content);
+
+    log.i('Response from gemini-pro: $response');
+
+    return response.text!;
+  }
+}
