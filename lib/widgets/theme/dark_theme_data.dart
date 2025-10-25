@@ -43,7 +43,7 @@ class DarkThemeData {
         onSecondary: Colors.blueAccent,
       ),
       textTheme: CustomTextTheme.build(),
-      cardTheme: const CardTheme(
+      cardTheme: const CardThemeData(
         color: Colors.black,
       ),
     );

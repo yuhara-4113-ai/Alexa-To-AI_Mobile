@@ -41,7 +41,7 @@ class LightThemeData {
       ),
       visualDensity: VisualDensity.adaptivePlatformDensity,
       textTheme: CustomTextTheme.build(),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: Colors.blue.shade50,
       ),
     );

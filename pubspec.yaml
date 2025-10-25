@@ -21,7 +21,7 @@ dependencies:
   flutter_hooks: ^0.20.5
   # ローカルデータの保存に使用
   hive: ^2.2.3
-  path_provider: ^2.1.2
+  path_provider: ^2.1.5
   # 自然な日本語(Noto Sans JPフォント)を使うために必要
   google_fonts: ^6.2.1
   # objectの比較に使用
@@ -74,3 +74,8 @@ flutter_icons:
   android: true
   adaptive_icon_background: assets/images/launcher/icon_adaptive_background.png
   adaptive_icon_foreground: assets/images/launcher/icon_adaptive_foreground.png
+dependency_overrides:
+  win32: ^5.5.0
+  flutter_plugin_android_lifecycle: ^2.0.32
+  url_launcher: ^6.3.2
+  url_launcher_android: ^6.3.24
