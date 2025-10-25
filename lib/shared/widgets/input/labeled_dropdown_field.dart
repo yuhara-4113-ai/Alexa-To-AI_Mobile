@@ -6,13 +6,13 @@ class LabeledDropdownField extends StatelessWidget {
   final List<String> options;
   final void Function(String?) onChanged;
 
-  const LabeledDropdownField({
+  LabeledDropdownField({
     super.key,
     required this.label,
     required this.options,
     required this.selected,
     required this.onChanged,
-  });
+  }) : assert(options.isNotEmpty, 'options must not be empty');
 
   static const InputDecoration _inputDecoration = InputDecoration(
     border: OutlineInputBorder(
@@ -31,6 +31,7 @@ class LabeledDropdownField extends StatelessWidget {
         Text(label, style: Theme.of(context).textTheme.bodyMedium),
         const SizedBox(height: 6.0),
         DropdownButtonFormField<String>(
+          key: ValueKey(selectedViewValue),
           decoration: _inputDecoration,
           initialValue: selectedViewValue,
           items: options.map((String value) {
