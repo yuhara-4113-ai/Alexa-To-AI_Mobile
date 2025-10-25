@@ -1,5 +1,5 @@
-import 'package:alexa_to_ai/models/ai_model.dart';
-import 'package:alexa_to_ai/models/setting_screen_model.dart';
+import 'package:alexa_to_ai/features/ai_setting/models/ai_model.dart';
+import 'package:alexa_to_ai/features/ai_setting/models/setting_screen_model.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 

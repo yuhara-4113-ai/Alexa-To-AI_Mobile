@@ -1,10 +1,10 @@
 import 'package:alexa_to_ai/database/database.dart';
-import 'package:alexa_to_ai/models/ai_model.dart';
-import 'package:alexa_to_ai/models/setting_screen_model.dart';
-import 'package:alexa_to_ai/providers/biometric_authentication_service_provider.dart';
-import 'package:alexa_to_ai/providers/setting_screen_model_provider.dart';
-import 'package:alexa_to_ai/services/cloud_storage_service.dart';
-import 'package:alexa_to_ai/services/login_authentication_service.dart';
+import 'package:alexa_to_ai/features/ai_setting/models/ai_model.dart';
+import 'package:alexa_to_ai/features/ai_setting/models/setting_screen_model.dart';
+import 'package:alexa_to_ai/features/authentication/providers/biometric_authentication_service_provider.dart';
+import 'package:alexa_to_ai/features/ai_setting/providers/setting_screen_model_provider.dart';
+import 'package:alexa_to_ai/shared/services/cloud_storage_service.dart';
+import 'package:alexa_to_ai/features/authentication/services/login_authentication_service.dart';
 import 'package:alexa_to_ai/widgets/barrel/setting_screen_widgets.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';

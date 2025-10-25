@@ -1,4 +1,4 @@
-import 'package:alexa_to_ai/models/setting_screen_model.dart';
+import 'package:alexa_to_ai/features/ai_setting/models/setting_screen_model.dart';
 import 'package:alexa_to_ai/views/chat_ai_screen.dart';
 import 'package:alexa_to_ai/views/setting_screen.dart';
 import 'package:flutter/material.dart';

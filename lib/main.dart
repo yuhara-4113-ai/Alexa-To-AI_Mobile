@@ -1,5 +1,5 @@
 import 'package:alexa_to_ai/database/database.dart';
-import 'package:alexa_to_ai/services/login_authentication_service.dart';
+import 'package:alexa_to_ai/features/authentication/services/login_authentication_service.dart';
 import 'package:alexa_to_ai/widgets/navigation/footer.dart';
 import 'package:alexa_to_ai/widgets/theme/dark_theme_data.dart';
 import 'package:alexa_to_ai/widgets/theme/light_theme_data.dart';

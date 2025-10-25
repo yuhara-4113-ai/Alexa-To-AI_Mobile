@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:alexa_to_ai/database/database.dart';
-import 'package:alexa_to_ai/providers/ai_service_provider.dart';
-import 'package:alexa_to_ai/services/ai_service.dart';
+import 'package:alexa_to_ai/features/ai_chat/providers/ai_service_provider.dart';
+import 'package:alexa_to_ai/features/ai_chat/services/ai_service.dart';
 import 'package:alexa_to_ai/widgets/barrel/chat_ai_screen_widgets.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
