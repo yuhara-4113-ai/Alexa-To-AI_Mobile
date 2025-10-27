@@ -293,7 +293,17 @@ cd ..
 
 ## 📄 ライセンス
 
-このプロジェクトのライセンスについては、リポジトリオーナーにお問い合わせください。
+このプロジェクトは [MIT License](LICENSE) の下でライセンスされています。
+
+### 依存ライブラリのライセンス
+
+本プロジェクトは以下のオープンソースライブラリを使用しており、それぞれのライセンスに従います：
+
+- **MIT License**: flutter_riverpod, openai_dart, equatable, logger など
+- **Apache 2.0**: hive, amplify_flutter, google_fonts, google_generative_ai, flutter_chat_ui など
+- **BSD-3-Clause**: flutter_bloc, http, local_auth など
+
+これらのライセンスは全てMIT Licenseと互換性があります。
 
 ## 👥 開発者
 
