@@ -22,6 +22,7 @@ class ModelFetcherService {
       client.endSession();
 
       // Filter for chat models and famous ones
+      // Note: Includes vision/multimodal models as they are chat-compatible
       final chatModels = response.data
           .where((model) {
             final id = model.id.toLowerCase();
@@ -73,6 +74,7 @@ class ModelFetcherService {
             .where((model) {
               final name = (model['name'] as String).toLowerCase();
               // Filter for chat-compatible famous models
+              // Note: Includes vision/multimodal models as they support chat functionality
               return name.contains('gemini') &&
                   (name.contains('pro') ||
                       name.contains('flash') ||
