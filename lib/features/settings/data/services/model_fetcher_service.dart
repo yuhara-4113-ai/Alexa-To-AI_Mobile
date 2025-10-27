@@ -29,8 +29,7 @@ class ModelFetcherService {
                     id.contains('gpt-3.5') ||
                     id.contains('o1') ||
                     id.contains('chatgpt')) &&
-                !id.contains('instruct') &&
-                !id.contains('vision');
+                !id.contains('instruct');
           })
           .map((model) => model.id)
           .toList();
@@ -78,8 +77,7 @@ class ModelFetcherService {
                   (name.contains('pro') ||
                       name.contains('flash') ||
                       name.contains('mini') ||
-                      name.contains('lite')) &&
-                  !name.contains('vision');
+                      name.contains('lite'));
             })
             .map((model) {
               // Extract model ID from the full name
