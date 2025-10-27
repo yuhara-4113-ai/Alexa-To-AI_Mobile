@@ -121,20 +121,26 @@ fvm flutter pub get
 
 ### 5. 環境変数の設定
 
-プロジェクトルートに `.env` ファイルを作成し、必要なAPIキーを設定します：
+プロジェクトルートに `.env` ファイルを作成し、AWS関連の設定を記述します：
 
 ```env
-# OpenAI API Key
-OPENAI_API_KEY=your_openai_api_key_here
+# AWS API Gateway設定
+OPEN_API_KEY=your_aws_api_gateway_key_here
+AWS_X_API_KEY=your_aws_x_api_key_here
+SAVE_AI_SETTING_URL=your_save_ai_setting_url_here
 
-# Google AI API Key
-GOOGLE_AI_API_KEY=your_google_ai_api_key_here
-
-# Anthropic API Key
-ANTHROPIC_API_KEY=your_anthropic_api_key_here
+# AWS Cognito設定
+COGNITO_POOL_ID=your_cognito_pool_id_here
+COGNITO_APP_CLIENT_ID=your_cognito_app_client_id_here
+COGNITO_REGION=your_cognito_region_here
+COGNITO_WEB_DOMAIN=your_cognito_web_domain_here
+COGNITO_SIGNIN_REDIRECT_URI=your_signin_redirect_uri_here
+COGNITO_SIGNOUT_REDIRECT_URI=your_signout_redirect_uri_here
 ```
 
-⚠️ **注意**: `.env` ファイルは `.gitignore` に含まれているため、コミットされません。
+⚠️ **注意**: 
+- `.env` ファイルは `.gitignore` に含まれているため、コミットされません
+- OpenAI、Google AI、AnthropicのAPIキーは、アプリの設定画面から入力します
 
 ### 6. コード生成（必要な場合）
 
