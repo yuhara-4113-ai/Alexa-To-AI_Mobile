@@ -176,16 +176,6 @@ fvm flutter build appbundle --release
 fvm flutter build ios --release
 ```
 
-## 🧪 テスト
-
-```sh
-# すべてのテストを実行
-fvm flutter test
-
-# カバレッジ付きでテストを実行
-fvm flutter test --coverage
-```
-
 ## 🏗 プロジェクト構造
 
 ```
