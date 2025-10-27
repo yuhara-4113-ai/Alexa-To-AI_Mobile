@@ -107,7 +107,7 @@ cd Alexa-To-AI_Mobile
 
 ```sh
 # プロジェクトで指定されたFlutterバージョン（3.35.7）をインストール
-fvm install
+fvm install 3.35.7
 
 # プロジェクトでFlutter 3.35.7を使用
 fvm use 3.35.7
