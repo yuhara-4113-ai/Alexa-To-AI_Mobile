@@ -137,9 +137,9 @@ class SettingScreen extends HookConsumerWidget {
                     LabeledDropdownField(
                       label: 'モデル',
                       selected: selectedModel.value,
-                      options: AITypes.getAITypeByName(
+                      options: _getAvailableModels(
                         settingScreenModelProvider.selectedType,
-                      ).models.toList(),
+                      ),
                       onChanged: (String? newValue) {
                         selectedModel.value = newValue!;
                       },
@@ -290,6 +290,16 @@ class SettingScreen extends HookConsumerWidget {
     viewModel.aiTone = settingModel!.aiTone;
     viewModel.selectedType = settingModel.selectedType;
     viewModel.aiModelsPerType = settingModel.copyAiModelsPerType();
+  }
+
+  List<String> _getAvailableModels(String aiType) {
+    final availableModels = availableModelsBox.get(availableModelsBoxKey);
+    if (availableModels == null) {
+      // Fallback to default models if not available
+      return AITypes.getAITypeByName(aiType).models.toList();
+    }
+    final models = availableModels.getModelsForType(aiType);
+    return models.isNotEmpty ? models : AITypes.getAITypeByName(aiType).models.toList();
   }
 
   void _showAlertDialog(BuildContext context) {

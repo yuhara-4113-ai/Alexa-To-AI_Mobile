@@ -3,10 +3,15 @@ import 'package:alexa_to_ai/app/theme/dark_theme_data.dart';
 import 'package:alexa_to_ai/app/theme/light_theme_data.dart';
 import 'package:alexa_to_ai/features/authentication/data/services/login_authentication_service.dart';
 import 'package:alexa_to_ai/features/settings/data/local/settings_hive_box.dart';
+import 'package:alexa_to_ai/features/settings/data/services/model_initialization_service.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Global key for showing snackbar from anywhere
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 // アプリケーションのエントリーポイント
 void main() async {
@@ -21,6 +26,26 @@ Future<void> someAsyncFunction() async {
   await initSettingsHiveBox();
   final loginAuthenticationService = LoginAuthenticationService();
   await loginAuthenticationService.configureAmplify();
+  
+  // Initialize and fetch AI models at startup
+  final modelInitService = ModelInitializationService();
+  final bool modelWasReset = await modelInitService.initializeModels();
+  
+  // Show warning if model was reset
+  if (modelWasReset) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scaffoldMessengerKey.currentState?.showSnackBar(
+        const SnackBar(
+          content: Text(
+            '保存されたモデルが利用できないため、デフォルトのモデルに変更されました',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.orange,
+          duration: Duration(seconds: 5),
+        ),
+      );
+    });
+  }
 }
 
 class App extends StatelessWidget {
@@ -38,6 +63,7 @@ class App extends StatelessWidget {
         child: MaterialApp(
           // 未認証であれば認証画面を表示
           builder: Authenticator.builder(),
+          scaffoldMessengerKey: scaffoldMessengerKey,
           themeMode: ThemeMode.system,
           darkTheme: const DarkThemeData().build(),
           theme: const LightThemeData().build(),
